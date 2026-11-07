@@ -1,0 +1,181 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Windows 10 IoT Enterprise LTSC 2021 无人值守应答文件（手动分区版）
+  ============================================================================
+  本文件不含 DiskConfiguration —— 分区由你在安装界面手动决定。
+  用途：要保留 Dell 三个恢复分区（WINRETOOLS / Image / DELLSUPPORT）时走这条。
+
+  ⚠️ 到「你想将 Windows 安装在哪里？」这一步时，只做一件事：
+       删除原系统分区（卷标 OS，也就是现在的 C:），
+       其余分区一个都不要动：
+         P1 ESP
+         P2 MSR
+         P4 WINRETOOLS     ← 当前系统的 WinRE 就住在这里
+         P5 Image     ← Dell 出厂镜像（Win10 20H2）
+         P6 DELLSUPPORT     ← SupportAssist OS Recovery 环境
+       然后选中新出现的「未分配空间」，点下一步。
+
+  其余行为与手动分区版一致：跳过 OOBE、建本地管理员 <USER>、自动登录一次
+  执行 FirstLogonCommands（去 D~H 盘找 Reinstall_Kit\bootstrap.cmd）。
+
+  ⚠️ 上机前必须核对镜像名：
+     dism /Get-WimInfo /WimFile:X:\sources\install.wim
+     LTSC 的 ISO 通常含两个镜像：
+       Windows 10 Enterprise LTSC 2021      <- 支持到 2027-01-12，不要选
+       Windows 10 IoT Enterprise LTSC 2021  <- 支持到 2032-01-13，选这个
+     若 ISO 里是 install.esd，把上面的 install.wim 换成 install.esd。
+
+  如需修改密码：搜索 <Password>，把 <Value></Value> 填上（U 盘请自行保管）
+-->
+<unattend xmlns="urn:schemas-microsoft-com:unattend"
+          xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State">
+
+  <!-- ============================ 1. windowsPE ============================ -->
+  <settings pass="windowsPE">
+    <component name="Microsoft-Windows-International-Core-WinPE"
+               processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35"
+               language="neutral"
+               versionScope="nonSxS">
+      <SetupUILanguage>
+        <UILanguage>zh-CN</UILanguage>
+      </SetupUILanguage>
+      <InputLocale>0804:00000804</InputLocale>
+      <SystemLocale>zh-CN</SystemLocale>
+      <UILanguage>zh-CN</UILanguage>
+      <UserLocale>zh-CN</UserLocale>
+    </component>
+
+    <component name="Microsoft-Windows-Setup"
+               processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35"
+               language="neutral"
+               versionScope="nonSxS">
+      <!-- 只选版本，不指定安装到哪 -->
+      <ImageInstall>
+        <OSImage>
+          <InstallFrom>
+            <MetaData wcm:action="add">
+              <Key>/IMAGE/NAME</Key>
+              <Value>Windows 10 IoT Enterprise LTSC 2021</Value>
+            </MetaData>
+          </InstallFrom>
+          <WillShowUI>OnError</WillShowUI>
+        </OSImage>
+      </ImageInstall>
+
+      <UserData>
+        <AcceptEula>true</AcceptEula>
+        <FullName><USER></FullName>
+        <Organization></Organization>
+      </UserData>
+    </component>
+  </settings>
+
+  <!-- ============================ 2. specialize ============================ -->
+  <settings pass="specialize">
+    <component name="Microsoft-Windows-Shell-Setup"
+               processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35"
+               language="neutral"
+               versionScope="nonSxS">
+      <ComputerName>%COMPUTERNAME%</ComputerName>
+      <TimeZone>China Standard Time</TimeZone>
+      <RegisteredOwner><USER></RegisteredOwner>
+      <RegisteredOrganization></RegisteredOrganization>
+    </component>
+
+    <component name="Microsoft-Windows-Deployment"
+               processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35"
+               language="neutral"
+               versionScope="nonSxS">
+      <RunSynchronous>
+        <RunSynchronousCommand wcm:action="add">
+          <Order>1</Order>
+          <Path>reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v DisableWindowsConsumerFeatures /t REG_DWORD /d 1 /f</Path>
+        </RunSynchronousCommand>
+        <RunSynchronousCommand wcm:action="add">
+          <Order>2</Order>
+          <Path>reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v AllowCortana /t REG_DWORD /d 0 /f</Path>
+        </RunSynchronousCommand>
+        <RunSynchronousCommand wcm:action="add">
+          <Order>3</Order>
+          <Path>reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v LongPathsEnabled /t REG_DWORD /d 1 /f</Path>
+        </RunSynchronousCommand>
+        <RunSynchronousCommand wcm:action="add">
+          <Order>4</Order>
+          <Path>powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c</Path>
+        </RunSynchronousCommand>
+        <RunSynchronousCommand wcm:action="add">
+          <Order>5</Order>
+          <Path>powercfg /hibernate off</Path>
+        </RunSynchronousCommand>
+      </RunSynchronous>
+    </component>
+  </settings>
+
+  <!-- ============================ 3. oobeSystem =========================== -->
+  <settings pass="oobeSystem">
+    <component name="Microsoft-Windows-International-Core"
+               processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35"
+               language="neutral"
+               versionScope="nonSxS">
+      <InputLocale>0804:00000804</InputLocale>
+      <SystemLocale>zh-CN</SystemLocale>
+      <UILanguage>zh-CN</UILanguage>
+      <UserLocale>zh-CN</UserLocale>
+    </component>
+
+    <component name="Microsoft-Windows-Shell-Setup"
+               processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35"
+               language="neutral"
+               versionScope="nonSxS">
+      <OOBE>
+        <HideEULAPage>true</HideEULAPage>
+        <HideOEMRegistrationScreen>true</HideOEMRegistrationScreen>
+        <HideOnlineAccountScreens>true</HideOnlineAccountScreens>
+        <HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
+        <NetworkLocation>Work</NetworkLocation>
+        <ProtectYourPC>3</ProtectYourPC>
+      </OOBE>
+
+      <UserAccounts>
+        <LocalAccounts>
+          <LocalAccount wcm:action="add">
+            <Password>
+              <Value></Value>
+              <PlainText>true</PlainText>
+            </Password>
+            <Description>本机管理员</Description>
+            <DisplayName><USER></DisplayName>
+            <Group>Administrators</Group>
+            <Name><USER></Name>
+          </LocalAccount>
+        </LocalAccounts>
+      </UserAccounts>
+
+      <AutoLogon>
+        <Password>
+          <Value></Value>
+          <PlainText>true</PlainText>
+        </Password>
+        <Username><USER></Username>
+        <Enabled>true</Enabled>
+        <LogonCount>1</LogonCount>
+      </AutoLogon>
+
+      <FirstLogonCommands>
+        <SynchronousCommand wcm:action="add">
+          <Order>1</Order>
+          <Description>Reinstall Kit Bootstrap</Description>
+          <CommandLine>cmd.exe /c for %d in (D E F G H) do @if exist "%d:\Reinstall_Kit\bootstrap.cmd" (call "%d:\Reinstall_Kit\bootstrap.cmd" &amp; exit /b 0)</CommandLine>
+          <RequiresUserInput>false</RequiresUserInput>
+        </SynchronousCommand>
+      </FirstLogonCommands>
+    </component>
+  </settings>
+
+</unattend>

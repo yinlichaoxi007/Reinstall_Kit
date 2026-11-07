@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+  无人值守应答文件 —— 专用于「社区重制版」IoT LTSC 镜像（手动分区版）
+  ============================================================================
+  适用镜像：D:\软件包\系统\Win10_IoT_Enterprise_LTSC_2021_64-Bit_2608.iso
+
+  该 ISO 不是微软原版。实测它里面的 install.esd 只有两个镜像，名字都不是官方的：
+
+      Index 1   Win10 IoT LTSC Founder Edition      ← 本文件默认用这个
+      Index 2   Win10 IoT LTSC Consensus Edition
+
+  ⚠️ 官方的 "Windows 10 IoT Enterprise LTSC 2021" 这个名字在这支 ISO 里根本不存在。
+     用 autounattend-IoT-LTSC.xml 会直接报「找不到指定的映像」而中断安装。
+     本文件已把 /IMAGE/NAME 换成 "Win10 IoT LTSC Founder Edition"。
+
+  为什么选 Founder 而不是 Consensus：
+      Founder    保留 Defender、保留 Edge、集成商店与运行库
+      Consensus  禁用 Defender、卸载 Edge、无商店
+      公司电脑上砍掉杀毒与浏览器代价太大，Founder 偏离最小。
+      想改用 Consensus：把下方 /IMAGE/NAME 的 Value 改成
+          Win10 IoT LTSC Consensus Edition
+
+  ⚠️ 风险（知情后再用）：
+      · 社区重制，无法与微软官方哈希比对，来源不可验证
+      · 集成内容（.NET 4.8.1 / DirectX 9 / VC++ 运行库 / 商店）是第三方二进制，未经审计
+      · 公司电脑装非官方镜像，一旦出安全事件将无法向 IT 说明来源
+      能拿到官方媒介（VLSC / Evaluation Center）就别用重制版。
+
+  其余行为与原手动分区版完全一致：
+      · 不含 DiskConfiguration，分区由你在安装界面手动决定（零误抹风险）
+      · 跳过 OOBE、建本地管理员、自动登录一次执行 bootstrap.cmd
+      · 密码留空，装完自己设
+-->
+<unattend xmlns="urn:schemas-microsoft-com:unattend"
+          xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State">
+
+  <!-- ============================ 1. windowsPE ============================ -->
+  <settings pass="windowsPE">
+    <component name="Microsoft-Windows-International-Core-WinPE"
+               processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35"
+               language="neutral"
+               versionScope="nonSxS">
+      <SetupUILanguage>
+        <UILanguage>zh-CN</UILanguage>
+      </SetupUILanguage>
+      <InputLocale>0804:00000804</InputLocale>
+      <SystemLocale>zh-CN</SystemLocale>
+      <UILanguage>zh-CN</UILanguage>
+      <UserLocale>zh-CN</UserLocale>
+    </component>
+
+    <component name="Microsoft-Windows-Setup"
+               processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35"
+               language="neutral"
+               versionScope="nonSxS">
+      <!-- 只选版本，不指定安装到哪 -->
+      <ImageInstall>
+        <OSImage>
+          <InstallFrom>
+            <MetaData wcm:action="add">
+              <Key>/IMAGE/NAME</Key>
+              <Value>Win10 IoT LTSC Founder Edition</Value>
+            </MetaData>
+          </InstallFrom>
+          <WillShowUI>OnError</WillShowUI>
+        </OSImage>
+      </ImageInstall>
+
+      <UserData>
+        <AcceptEula>true</AcceptEula>
+        <FullName><USER></FullName>
+        <Organization></Organization>
+      </UserData>
+    </component>
+  </settings>
+
+  <!-- ============================ 2. specialize ============================ -->
+  <settings pass="specialize">
+    <component name="Microsoft-Windows-Shell-Setup"
+               processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35"
+               language="neutral"
+               versionScope="nonSxS">
+      <ComputerName>%COMPUTERNAME%</ComputerName>
+      <TimeZone>China Standard Time</TimeZone>
+      <RegisteredOwner><USER></RegisteredOwner>
+      <RegisteredOrganization></RegisteredOrganization>
+    </component>
+
+    <component name="Microsoft-Windows-Deployment"
+               processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35"
+               language="neutral"
+               versionScope="nonSxS">
+      <RunSynchronous>
+        <RunSynchronousCommand wcm:action="add">
+          <Order>1</Order>
+          <Path>reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v DisableWindowsConsumerFeatures /t REG_DWORD /d 1 /f</Path>
+        </RunSynchronousCommand>
+        <RunSynchronousCommand wcm:action="add">
+          <Order>2</Order>
+          <Path>reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v AllowCortana /t REG_DWORD /d 0 /f</Path>
+        </RunSynchronousCommand>
+        <RunSynchronousCommand wcm:action="add">
+          <Order>3</Order>
+          <Path>reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v LongPathsEnabled /t REG_DWORD /d 1 /f</Path>
+        </RunSynchronousCommand>
+        <RunSynchronousCommand wcm:action="add">
+          <Order>4</Order>
+          <Path>powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c</Path>
+        </RunSynchronousCommand>
+        <RunSynchronousCommand wcm:action="add">
+          <Order>5</Order>
+          <Path>powercfg /hibernate off</Path>
+        </RunSynchronousCommand>
+      </RunSynchronous>
+    </component>
+  </settings>
+
+  <!-- ============================ 3. oobeSystem =========================== -->
+  <settings pass="oobeSystem">
+    <component name="Microsoft-Windows-International-Core"
+               processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35"
+               language="neutral"
+               versionScope="nonSxS">
+      <InputLocale>0804:00000804</InputLocale>
+      <SystemLocale>zh-CN</SystemLocale>
+      <UILanguage>zh-CN</UILanguage>
+      <UserLocale>zh-CN</UserLocale>
+    </component>
+
+    <component name="Microsoft-Windows-Shell-Setup"
+               processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35"
+               language="neutral"
+               versionScope="nonSxS">
+      <OOBE>
+        <HideEULAPage>true</HideEULAPage>
+        <HideOEMRegistrationScreen>true</HideOEMRegistrationScreen>
+        <HideOnlineAccountScreens>true</HideOnlineAccountScreens>
+        <HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
+        <NetworkLocation>Work</NetworkLocation>
+        <ProtectYourPC>3</ProtectYourPC>
+      </OOBE>
+
+      <UserAccounts>
+        <LocalAccounts>
+          <LocalAccount wcm:action="add">
+            <Password>
+              <Value></Value>
+              <PlainText>true</PlainText>
+            </Password>
+            <Description>本机管理员</Description>
+            <DisplayName><USER></DisplayName>
+            <Group>Administrators</Group>
+            <Name><USER></Name>
+          </LocalAccount>
+        </LocalAccounts>
+      </UserAccounts>
+
+      <AutoLogon>
+        <Password>
+          <Value></Value>
+          <PlainText>true</PlainText>
+        </Password>
+        <Username><USER></Username>
+        <Enabled>true</Enabled>
+        <LogonCount>1</LogonCount>
+      </AutoLogon>
+
+      <FirstLogonCommands>
+        <SynchronousCommand wcm:action="add">
+          <Order>1</Order>
+          <Description>Reinstall Kit Bootstrap</Description>
+          <CommandLine>cmd.exe /c for %d in (D E F G H) do @if exist "%d:\Reinstall_Kit\bootstrap.cmd" (call "%d:\Reinstall_Kit\bootstrap.cmd" &amp; exit /b 0)</CommandLine>
+          <RequiresUserInput>false</RequiresUserInput>
+        </SynchronousCommand>
+      </FirstLogonCommands>
+    </component>
+  </settings>
+
+</unattend>

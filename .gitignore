@@ -1,0 +1,15 @@
+# 大体积二进制、用户数据与运行时产物不入库
+DellFactoryImage/
+pkgs/
+tools/
+backup/
+logs/
+_tmp/
+.screenshots/
+scripts/__pycache__/
+*.pyc
+
+# 清单的历史备份
+*.bak-20261107
+*.bak2-20261107
+*.bak3-20261107

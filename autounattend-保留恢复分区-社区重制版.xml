@@ -1,0 +1,218 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+  社区重制版 ISO 无人值守应答文件（保留 Dell 恢复分区版）
+  ============================================================================
+  配这支 ISO 用：D:\软件包\系统\Win10_IoT_Enterprise_LTSC_2021_64-Bit_2608.iso
+  映像名：Win10 IoT LTSC Founder Edition
+        （另一支 Consensus Edition 禁 Defender、卸 Edge，本文件不用它）
+
+  分区策略：只格式化现有的 3 号分区（C:），其余一律不动
+      P1 ESP / P2 MSR / P3 OS（原系统分区）
+      P4 WINRETOOLS / P5 Image / P6 DELLSUPPORT（Dell 恢复分区）
+      装完这 6 个分区原样保留，F12 一键恢复入口仍在。
+
+  ⚠️ 磁盘号风险（必读）
+      本文件写死 DiskID=0、PartitionID=3，是按 Dell 默认布局写的示例。
+      WinPE 里磁盘枚举顺序可能和 Windows 不同，装之前必须核对。
+      · 若 WinPE 里 Disk 0 是系统盘、分区 3 是原来的 C: → 正常安装
+      · 若 Disk 0 不是系统盘、或没有 3 号分区，
+        安装程序报错停下（WillShowUI=OnError），不会误抹数据，
+        但这次安装白做，需改用 autounattend-手动分区-社区重制版.xml 重来。
+
+      若想彻底避免：装之前拔掉数据盘的 SATA 线。
+      本文件的失败是安全的失败（不毁数据），这是选它而不是选
+      autounattend-IoT-LTSC.xml（整盘抹除）的理由。
+
+  已知副作用：
+      · ESP 不重写 → 旧系统的 BCD 残留条目指向已格式化的 C:，
+        无害死条目，装完可 bcdedit 清理（可选）
+      · 没有空余空间建新恢复分区 → WinRE 落在 C:\Recovery\WindowsRE
+        或复用 P4，功能不受影响
+      · 社区重制版保留 Defender + Edge，但无商店应用
+
+  如需修改密码：搜索 <Password>，把 <Value></Value> 填上
+-->
+<unattend xmlns="urn:schemas-microsoft-com:unattend"
+          xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State">
+
+  <!-- ============================ 1. windowsPE ============================ -->
+  <settings pass="windowsPE">
+    <component name="Microsoft-Windows-International-Core-WinPE"
+               processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35"
+               language="neutral"
+               versionScope="nonSxS">
+      <SetupUILanguage>
+        <UILanguage>zh-CN</UILanguage>
+      </SetupUILanguage>
+      <InputLocale>0804:00000804</InputLocale>
+      <SystemLocale>zh-CN</SystemLocale>
+      <UILanguage>zh-CN</UILanguage>
+      <UserLocale>zh-CN</UserLocale>
+    </component>
+
+    <component name="Microsoft-Windows-Setup"
+               processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35"
+               language="neutral"
+               versionScope="nonSxS">
+
+      <DiskConfiguration>
+        <WillShowUI>OnError</WillShowUI>
+        <Disk wcm:action="add">
+          <DiskID>0</DiskID>
+          <!-- 关键：不整盘抹除，只格式化现有的 3 号分区（C:） -->
+          <WillWipeDisk>false</WillWipeDisk>
+          <ModifyPartitions>
+            <!-- 只改 C:；ESP / MSR / 三个 Dell 恢复分区一律不动 -->
+            <ModifyPartition wcm:action="add">
+              <Order>1</Order>
+              <PartitionID>3</PartitionID>
+              <Letter>C</Letter>
+              <Format>NTFS</Format>
+              <Label>Windows</Label>
+            </ModifyPartition>
+          </ModifyPartitions>
+        </Disk>
+      </DiskConfiguration>
+
+      <ImageInstall>
+        <OSImage>
+          <InstallFrom>
+            <MetaData wcm:action="add">
+              <Key>/IMAGE/NAME</Key>
+              <Value>Win10 IoT LTSC Founder Edition</Value>
+            </MetaData>
+          </InstallFrom>
+          <InstallTo>
+            <DiskID>0</DiskID>
+            <PartitionID>3</PartitionID>
+          </InstallTo>
+          <WillShowUI>OnError</WillShowUI>
+        </OSImage>
+      </ImageInstall>
+
+      <UserData>
+        <AcceptEula>true</AcceptEula>
+        <FullName><USER></FullName>
+        <Organization></Organization>
+      </UserData>
+    </component>
+  </settings>
+
+  <!-- ============================ 2. specialize ============================ -->
+  <settings pass="specialize">
+    <component name="Microsoft-Windows-Shell-Setup"
+               processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35"
+               language="neutral"
+               versionScope="nonSxS">
+      <ComputerName>%COMPUTERNAME%</ComputerName>
+      <TimeZone>China Standard Time</TimeZone>
+      <RegisteredOwner><USER></RegisteredOwner>
+      <RegisteredOrganization></RegisteredOrganization>
+    </component>
+
+    <component name="Microsoft-Windows-Deployment"
+               processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35"
+               language="neutral"
+               versionScope="nonSxS">
+      <RunSynchronous>
+        <!-- 关闭开始菜单里的推广/建议 -->
+        <RunSynchronousCommand wcm:action="add">
+          <Order>1</Order>
+          <Path>reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v DisableWindowsConsumerFeatures /t REG_DWORD /d 1 /f</Path>
+        </RunSynchronousCommand>
+        <!-- 关闭 Cortana -->
+        <RunSynchronousCommand wcm:action="add">
+          <Order>2</Order>
+          <Path>reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v AllowCortana /t REG_DWORD /d 0 /f</Path>
+        </RunSynchronousCommand>
+        <!-- 开启 Win32 长路径支持（开发用得上） -->
+        <RunSynchronousCommand wcm:action="add">
+          <Order>3</Order>
+          <Path>reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v LongPathsEnabled /t REG_DWORD /d 1 /f</Path>
+        </RunSynchronousCommand>
+        <!-- 高性能电源计划 -->
+        <RunSynchronousCommand wcm:action="add">
+          <Order>4</Order>
+          <Path>powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c</Path>
+        </RunSynchronousCommand>
+        <!-- 禁用休眠，省 C 盘空间 -->
+        <RunSynchronousCommand wcm:action="add">
+          <Order>5</Order>
+          <Path>powercfg /hibernate off</Path>
+        </RunSynchronousCommand>
+      </RunSynchronous>
+    </component>
+  </settings>
+
+  <!-- ============================ 3. oobeSystem =========================== -->
+  <settings pass="oobeSystem">
+    <component name="Microsoft-Windows-International-Core"
+               processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35"
+               language="neutral"
+               versionScope="nonSxS">
+      <InputLocale>0804:00000804</InputLocale>
+      <SystemLocale>zh-CN</SystemLocale>
+      <UILanguage>zh-CN</UILanguage>
+      <UserLocale>zh-CN</UserLocale>
+    </component>
+
+    <component name="Microsoft-Windows-Shell-Setup"
+               processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35"
+               language="neutral"
+               versionScope="nonSxS">
+
+      <OOBE>
+        <HideEULAPage>true</HideEULAPage>
+        <HideOEMRegistrationScreen>true</HideOEMRegistrationScreen>
+        <HideOnlineAccountScreens>true</HideOnlineAccountScreens>
+        <HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
+        <NetworkLocation>Work</NetworkLocation>
+        <ProtectYourPC>3</ProtectYourPC>
+      </OOBE>
+
+      <UserAccounts>
+        <LocalAccounts>
+          <LocalAccount wcm:action="add">
+            <Password>
+              <Value></Value>
+              <PlainText>true</PlainText>
+            </Password>
+            <Description>本机管理员</Description>
+            <DisplayName><USER></DisplayName>
+            <Group>Administrators</Group>
+            <Name><USER></Name>
+          </LocalAccount>
+        </LocalAccounts>
+      </UserAccounts>
+
+      <!-- 自动登录 1 次，只为了让 FirstLogonCommands 跑起来；跑完自动关闭 -->
+      <AutoLogon>
+        <Password>
+          <Value></Value>
+          <PlainText>true</PlainText>
+        </Password>
+        <Username><USER></Username>
+        <Enabled>true</Enabled>
+        <LogonCount>1</LogonCount>
+      </AutoLogon>
+
+      <FirstLogonCommands>
+        <!-- 在 D/E/F/G/H 里找 Reinstall_Kit，找到就跑 bootstrap.cmd；不写死盘符 -->
+        <SynchronousCommand wcm:action="add">
+          <Order>1</Order>
+          <Description>Reinstall Kit Bootstrap</Description>
+          <CommandLine>cmd.exe /c for %d in (D E F G H) do @if exist "%d:\Reinstall_Kit\bootstrap.cmd" (call "%d:\Reinstall_Kit\bootstrap.cmd" &amp; exit /b 0)</CommandLine>
+          <RequiresUserInput>false</RequiresUserInput>
+        </SynchronousCommand>
+      </FirstLogonCommands>
+
+    </component>
+  </settings>
+
+</unattend>
