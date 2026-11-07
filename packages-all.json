@@ -1,0 +1,178 @@
+﻿{
+    "$schema":  "https://aka.ms/winget-packages.schema.2.0.json",
+    "CreationDate":  "2026-11-06T13:20:00.000-00:00",
+    "Sources":  [
+                    {
+                        "Packages":  [
+                                         {
+                                             "PackageIdentifier":  "NetEase.UURemote"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "3TSoftwareLabs.Studio3T"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "ZhipuAI.ZCode"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "Joplin.Joplin"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "MarkText.MarkText"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "Tencent.WorkBuddy"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "DBeaver.DBeaver.Community"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "Git.Git"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "JetBrains.GoLand"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "JRSoftware.InnoSetup.7"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "JetBrains.IntelliJIDEA"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "JetBrains.Rider"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "Notepad++.Notepad++"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "SoftwareFreedomConservancy.QEMU"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "mg-chao.snow-shot"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "VideoLAN.VLC"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "qishibo.AnotherRedisDesktopManager"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "Alibaba.QwenWork.CN"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "LocalSend.LocalSend"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "SoftDeluxe.FreeDownloadManager"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "TheDocumentFoundation.LibreOffice"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "BlenderFoundation.Blender"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "ThioJoe.SvgThumbnailExtension"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "TortoiseGit.TortoiseGit"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "Microsoft.Office.2010.FilterPacks"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "Microsoft.VSTOR"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "TheDocumentFoundation.LibreOffice.HelpPack"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "GoLang.Go"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "SwiftList.SwiftList"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "Eziriz.DotNetReactor"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "GanttProject.GanttProject"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "Graphviz.Graphviz"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "Inkscape.Inkscape"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "LibreCAD.LibreCAD"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "EclipseFoundation.Mosquitto"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "NSIS.NSIS"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "Sogou.SogouInput"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "Tencent.WeChat.Universal"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "WiresharkFoundation.Wireshark"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "Microsoft.VisualStudio.Professional"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "EuSoft.Eudic"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "Mobatek.MobaXterm"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "Kingsoft.KDocs"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "GeoGebra.CalculatorSuite"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "ESEngine.ReasonixDesktop"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "Tencent.CodeBuddy.CN"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "Microsoft.VisualStudioCode"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "Meituan.CatPaw"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "Python.Python.3.12"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "ByteDance.Trae.CN"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "Microsoft.AppInstaller"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "Microsoft.WindowsTerminal"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "7zip.7zip"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "ndd.Notepad--"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "AnywhereLabs.DSHDesktop"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "Kingsoft.WPSOffice"
+                                         }
+                                     ]
+                    }
+                ]
+}

@@ -1,0 +1,46 @@
+﻿{
+    "$schema":  "https://aka.ms/winget-packages.schema.2.0.json",
+    "CreationDate":  "2026-11-06T13:20:00.000-00:00",
+    "Sources":  [
+                    {
+                        "Packages":  [
+                                         {
+                                             "PackageIdentifier":  "NetEase.UURemote"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "Git.Git"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "TortoiseGit.TortoiseGit"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "Python.Python.3.12"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "7zip.7zip"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "ndd.Notepad--"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "Tencent.WorkBuddy"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "Tencent.CodeBuddy.CN"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "ByteDance.Trae.CN"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "Alibaba.QwenWork.CN"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "ZhipuAI.ZCode"
+                                         },
+                                         {
+                                             "PackageIdentifier":  "AnywhereLabs.DSHDesktop"
+                                         }
+                                     ]
+                    }
+                ]
+}
