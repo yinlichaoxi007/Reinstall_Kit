@@ -37,3 +37,17 @@ AppData\Roaming\Trae CN,%MIGROOT%\AppData\Roaming\Trae CN,Trae CN 用户数据
 AppData\Roaming\kingsoft,%MIGROOT%\AppData\Roaming\kingsoft,WPS 配置
 .gitconfig,%MIGROOT%\.gitconfig,Git 全局配置
 .ssh,%MIGROOT%\.ssh,SSH 密钥与 known_hosts
+.3T_community,%MIGROOT%\.3T_community,3T 社区客户端数据
+.cagent,%MIGROOT%\.cagent,Cagent 数据
+.catpaw,%MIGROOT%\.catpaw,CatPaw 配置
+.catpawai,%MIGROOT%\.catpawai,CatPaw 附加配置
+.dsh,%MIGROOT%\.dsh,DSH 桌面端数据
+.qoder-cli,%MIGROOT%\.qoder-cli,Qoder CLI 数据
+.qwenworkcn,%MIGROOT%\.qwenworkcn,千问办公数据
+.sankuai,%MIGROOT%\.sankuai,猫爪会话库与索引
+.sheetagent,%MIGROOT%\.sheetagent,SheetAgent 数据
+AppData\Local\@deepseek-aidsh-desktop-updater,%MIGROOT%\AppData\Local\@deepseek-aidsh-desktop-updater,DeepSeek DSH 更新缓存
+AppData\Roaming\com.qodercn.app.stable,%MIGROOT%\AppData\Roaming\com.qodercn.app.stable,Qoder CN 应用数据
+AppData\Roaming\ichat,%MIGROOT%\AppData\Roaming\ichat,iChat 数据
+AppData\Roaming\reasonix,%MIGROOT%\AppData\Roaming\reasonix,Reasonix 数据根
+WorkBuddy,%MIGROOT%\WorkBuddy,WorkBuddy 会话工作区
