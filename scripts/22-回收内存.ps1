@@ -1,19 +1,19 @@
-﻿# 6-回收内存.ps1
+﻿# 22-回收内存.ps1
 # 目标：把「已提交」里属于浪费的那部分收回来。默认只报告，不动手。
 #
-#   powershell -ExecutionPolicy Bypass -File "D:\Reinstall_Kit\scripts\6-回收内存.ps1"
+#   powershell -ExecutionPolicy Bypass -File "D:\Reinstall_Kit\scripts\22-回收内存.ps1"
 #       只看现状与候选清单
 #
-#   powershell -ExecutionPolicy Bypass -File "D:\Reinstall_Kit\scripts\6-回收内存.ps1" -Apply -TrimMsBuild
+#   powershell -ExecutionPolicy Bypass -File "D:\Reinstall_Kit\scripts\22-回收内存.ps1" -Apply -TrimMsBuild
 #       结束空闲的 MSBuild 节点（VS 编译缓存，安全）
 #
-#   powershell -ExecutionPolicy Bypass -File "D:\Reinstall_Kit\scripts\6-回收内存.ps1" -Apply -QuitJoplin
+#   powershell -ExecutionPolicy Bypass -File "D:\Reinstall_Kit\scripts\22-回收内存.ps1" -Apply -QuitJoplin
 #       结束 Joplin（会丢失未保存的正在编辑内容；托盘里的窗口先手动看一眼）
 #
-#   powershell -ExecutionPolicy Bypass -File "D:\Reinstall_Kit\scripts\6-回收内存.ps1" -Apply -QuitBackground
+#   powershell -ExecutionPolicy Bypass -File "D:\Reinstall_Kit\scripts\22-回收内存.ps1" -Apply -QuitBackground
 #       结束明确闲置的后台常驻程序
 #
-#   powershell -ExecutionPolicy Bypass -File "D:\Reinstall_Kit\scripts\6-回收内存.ps1" -Apply -TrimMsBuild -QuitJoplin -QuitBackground
+#   powershell -ExecutionPolicy Bypass -File "D:\Reinstall_Kit\scripts\22-回收内存.ps1" -Apply -TrimMsBuild -QuitJoplin -QuitBackground
 #       一次全做
 #
 # 设计原则：
