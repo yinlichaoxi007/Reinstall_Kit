@@ -1,0 +1,39 @@
+rel,target,note
+.codebuddy,%MIGROOT%\.codebuddy,CodeBuddy 客户端配置与会话
+.codebuddycn,%MIGROOT%\.codebuddycn,CodeBuddy CN 数据
+.config\joplin-desktop,%MIGROOT%\.config\joplin-desktop,Joplin 笔记库
+.lingma,%MIGROOT%\.lingma,通义灵码
+.nuget,%MIGROOT%\.nuget,NuGet 全局包
+.qoder-cn,%MIGROOT%\.qoder-cn,Qoder CN 配置
+.trae-cn,%MIGROOT%\.trae-cn,Trae CN 配置
+.vscode,%MIGROOT%\.vscode,VS Code 扩展与配置
+.workbuddy,%MIGROOT%\.workbuddy,WorkBuddy 会话与历史（最重要）
+.zcode,%MIGROOT%\.zcode,ZCode 配置
+AppData\Local\@genieworkbuddy-desktop-updater,%MIGROOT%\AppData\Local\@genieworkbuddy-desktop-updater,WorkBuddy 更新缓存
+AppData\Local\@joplinapp-desktop-updater,%MIGROOT%\AppData\Local\@joplinapp-desktop-updater,Joplin 更新缓存
+AppData\Local\@opensquilladesktop-electron-updater,%MIGROOT%\AppData\Local\@opensquilladesktop-electron-updater,OpenSquilla 更新缓存
+AppData\Local\@zcodedesktop-updater,%MIGROOT%\AppData\Local\@zcodedesktop-updater,ZCode 更新缓存
+AppData\Local\CodeBuddyExtension,%MIGROOT%\AppData\Local\CodeBuddyExtension,CodeBuddy 插件
+AppData\Local\Downloaded Installations,%MIGROOT%\AppData\Local\Downloaded Installations,已下载的安装缓存
+AppData\Local\GeoGebra_Calculator,%MIGROOT%\AppData\Local\GeoGebra_Calculator,GeoGebra
+AppData\Local\NuGet,%MIGROOT%\AppData\Local\NuGet,NuGet 缓存
+AppData\Local\Programs,%MIGROOT%\AppData\Local\Programs,用户级程序安装目录（必须先建，再装软件）
+AppData\Local\Unity,%MIGROOT%\AppData\Local\Unity,Unity
+AppData\Local\go-build,%MIGROOT%\AppData\Local\go-build,Go 编译缓存
+AppData\Local\kk9-updater,%MIGROOT%\AppData\Local\kk9-updater,KK9 更新缓存
+AppData\Local\npm-cache,%MIGROOT%\AppData\Local\npm-cache,npm 缓存
+AppData\Local\pnpm,%MIGROOT%\AppData\Local\pnpm,pnpm
+AppData\Local\pnpm-cache,%MIGROOT%\AppData\Local\pnpm-cache,pnpm 缓存
+AppData\Local\pnpm-state,%MIGROOT%\AppData\Local\pnpm-state,pnpm 状态
+AppData\Local\qoder-cn-updater,%MIGROOT%\AppData\Local\qoder-cn-updater,Qoder 更新缓存
+AppData\Roaming\CatPawAI,%MIGROOT%\AppData\Roaming\CatPawAI,CatPaw AI 配置
+AppData\Roaming\Code,%MIGROOT%\AppData\Roaming\Code,VS Code 用户设置
+AppData\Roaming\CodeBuddy CN,%MIGROOT%\AppData\Roaming\CodeBuddy CN,CodeBuddy CN 用户数据
+AppData\Roaming\KK6,%MIGROOT%\AppData\Roaming\KK6,蓝凌 KK6
+AppData\Roaming\QoderCN,%MIGROOT%\AppData\Roaming\QoderCN,Qoder CN 用户数据
+AppData\Roaming\TRAE SOLO CN,%MIGROOT%\AppData\Roaming\TRAE SOLO CN,Trae SOLO
+AppData\Roaming\Tencent,%MIGROOT%\AppData\Roaming\Tencent,腾讯系（微信等）
+AppData\Roaming\Trae CN,%MIGROOT%\AppData\Roaming\Trae CN,Trae CN 用户数据
+AppData\Roaming\kingsoft,%MIGROOT%\AppData\Roaming\kingsoft,WPS 配置
+.gitconfig,%MIGROOT%\.gitconfig,Git 全局配置
+.ssh,%MIGROOT%\.ssh,SSH 密钥与 known_hosts
