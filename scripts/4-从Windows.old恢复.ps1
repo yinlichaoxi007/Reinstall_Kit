@@ -18,8 +18,8 @@
 #>
 [CmdletBinding()]
 param(
-    [string]$OldRoot = 'C:\Windows.old\Users\%USERNAME%',
-    [string]$MigrationRoot = '%MIGROOT%',
+    [string]$OldRoot = "C:\Windows.old\Users\$env:USERNAME",
+    [string]$MigrationRoot = "D:\migration\C\Users\$env:USERNAME",
     [switch]$Run,
     [switch]$SkipEdge
 )

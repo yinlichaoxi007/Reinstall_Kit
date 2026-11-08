@@ -323,10 +323,17 @@ if ($DryRun) {
 Write-Step "4. 放置应答文件"
 
 $ansDest = Join-Path $usbRoot 'autounattend.xml'
+# 模板里的 __USER__ / __COMPUTERNAME__ 按本机配置渲染，模板本身不含身份信息
+function Render-AnswerText {
+    param([string]$Path)
+    $text = Get-Content -LiteralPath $Path -Raw -Encoding UTF8
+    return $text.Replace('__USER__', $LocalUserName).Replace('__COMPUTERNAME__', $LocalComputerName)
+}
+$ansText = Render-AnswerText $ansPath
+
 if ((Test-Path -LiteralPath $ansDest) -and -not $DryRun) {
-    $oldHash = (Get-FileHash -LiteralPath $ansDest -Algorithm SHA256).Hash
-    $newHash = (Get-FileHash -LiteralPath $ansPath -Algorithm SHA256).Hash
-    if ($oldHash -eq $newHash) {
+    $oldText = Get-Content -LiteralPath $ansDest -Raw -Encoding UTF8
+    if ($oldText -eq $ansText) {
         Write-Ok "U 盘根目录的 autounattend.xml 已经是最新的，跳过"
     } else {
         Write-Warn "U 盘根目录已有一个不同的 autounattend.xml，将覆盖（旧文件备份为 .bak）"
@@ -335,13 +342,11 @@ if ((Test-Path -LiteralPath $ansDest) -and -not $DryRun) {
 }
 
 if ($DryRun) {
-    Write-Info ("[演练] 会拷贝 {0} -> {1}" -f $ansPath, $ansDest)
+    Write-Info ("[演练] 会按本机配置渲染 {0} -> {1}" -f $ansPath, $ansDest)
 } else {
-    Copy-Item -LiteralPath $ansPath -Destination $ansDest -Force
-    $h1 = (Get-FileHash -LiteralPath $ansPath -Algorithm SHA256).Hash
-    $h2 = (Get-FileHash -LiteralPath $ansDest -Algorithm SHA256).Hash
-    if ($h1 -ne $h2) {
-        Write-Err "应答文件拷过去后哈希不一致，U 盘可能有坏块。"
+    [IO.File]::WriteAllText($ansDest, $ansText, (New-Object Text.UTF8Encoding($true)))
+    if (-not (Test-Path -LiteralPath $ansDest)) {
+        Write-Err "应答文件写入失败"
         Stop-KitLog; exit 1
     }
     Write-Ok ("autounattend.xml 已放到 U 盘根目录（来源: {0}）" -f $AnswerFile)
@@ -350,7 +355,8 @@ if ($DryRun) {
     $spare = Join-Path $script:KitRoot 'autounattend-手动分区-社区重制版.xml'
     if (Test-Path -LiteralPath $spare) {
         $spareDest = Join-Path $usbRoot '备选-手动分区.xml'
-        Copy-Item -LiteralPath $spare -Destination $spareDest -Force
+        $spareText = Render-AnswerText $spare
+        [IO.File]::WriteAllText($spareDest, $spareText, (New-Object Text.UTF8Encoding($true)))
         Write-Info "备用应答文件已放: 备选-手动分区.xml（自动分区失败时改名为 autounattend.xml 再用）"
     }
 }
@@ -378,7 +384,7 @@ U 盘内容：
   · 不要碰数据盘
 
 三、装的过程中
-  · 全程不需要输入任何东西，会自动建账户 <USER>（空密码）
+  · 全程不需要输入任何东西，会自动建账户（用户名取自 local.config.ps1，空密码）
   · 大约 10~15 分钟，中间会自动重启
 
 四、装完第一次进桌面

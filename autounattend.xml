@@ -95,7 +95,7 @@
 
       <UserData>
         <AcceptEula>true</AcceptEula>
-        <FullName><USER></FullName>
+        <FullName>__USER__</FullName>
         <Organization></Organization>
       </UserData>
     </component>
@@ -108,9 +108,9 @@
                publicKeyToken="31bf3856ad364e35"
                language="neutral"
                versionScope="nonSxS">
-      <ComputerName>%COMPUTERNAME%</ComputerName>
+      <ComputerName>__COMPUTERNAME__</ComputerName>
       <TimeZone>China Standard Time</TimeZone>
-      <RegisteredOwner><USER></RegisteredOwner>
+      <RegisteredOwner>__USER__</RegisteredOwner>
       <RegisteredOrganization></RegisteredOrganization>
     </component>
 
@@ -185,9 +185,9 @@
               <PlainText>true</PlainText>
             </Password>
             <Description>本机管理员</Description>
-            <DisplayName><USER></DisplayName>
+            <DisplayName>__USER__</DisplayName>
             <Group>Administrators</Group>
-            <Name><USER></Name>
+            <Name>__USER__</Name>
           </LocalAccount>
         </LocalAccounts>
       </UserAccounts>
@@ -198,7 +198,7 @@
           <Value></Value>
           <PlainText>true</PlainText>
         </Password>
-        <Username><USER></Username>
+        <Username>__USER__</Username>
         <Enabled>true</Enabled>
         <LogonCount>1</LogonCount>
       </AutoLogon>

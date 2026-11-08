@@ -92,7 +92,7 @@ if ($hit -eq 0) { Add-Result 'PASS' '反模式' '5 类全部未命中' }
 Write-Step "3. Python 脚本编译"
 
 $pyCandidates = @(
-    '%USERPROFILE%\.workbuddy\binaries\python\versions\3.13.12\python.exe',
+    (Join-Path $env:USERPROFILE '.workbuddy\binaries\python\versions\3.13.12\python.exe'),
     'python',
     'py'
 )

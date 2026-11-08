@@ -24,6 +24,13 @@ $ErrorActionPreference = 'Stop'
 # 强改成 UTF8 会让所有中文变成乱码。
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+
+# 迁移根目录：优先读本机私有配置，缺省按当前用户名推断
+$MigrationRoot = $null
+$configFile = Join-Path (Split-Path -Parent $scriptDir) 'local.config.ps1'
+if (Test-Path -LiteralPath $configFile) { . $configFile }
+if (-not $MigrationRoot) { $MigrationRoot = Join-Path 'D:\migration\C\Users' $env:USERNAME }
+
 $csvCandidates = @(
     (Join-Path (Split-Path -Parent $scriptDir) 'links.csv'),
     (Join-Path $scriptDir 'links.csv'),
@@ -61,7 +68,9 @@ function Get-LinkTarget {
 
 foreach ($row in $rows) {
     $rel    = $row.rel
-    $target = $row.target
+    # 清单用 %MIGROOT% 与 %USERPROFILE% 占位，避免把本机用户名写进仓库
+    $target = $row.target.Replace('%MIGROOT%', $MigrationRoot)
+    $target = [Environment]::ExpandEnvironmentVariables($target)
     $link   = Join-Path $env:USERPROFILE $rel
 
     # --- 1. 目标必须存在 ---

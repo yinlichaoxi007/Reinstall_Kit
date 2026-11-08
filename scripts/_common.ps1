@@ -14,6 +14,13 @@ $script:KitRoot = Split-Path -Parent $PSScriptRoot
 if (-not $script:KitRoot) { $script:KitRoot = 'D:\Reinstall_Kit' }
 $script:LogFile = $null
 
+# 本机私有配置：用户名、机器名、迁移根目录。文件不入库，缺失时按环境变量推断
+$script:LocalConfigFile = Join-Path $script:KitRoot 'local.config.ps1'
+if (Test-Path -LiteralPath $script:LocalConfigFile) { . $script:LocalConfigFile }
+if (-not $LocalUserName)     { $LocalUserName = $env:USERNAME }
+if (-not $LocalComputerName) { $LocalComputerName = $env:COMPUTERNAME }
+if (-not $MigrationRoot)     { $MigrationRoot = "D:\migration\C\Users\$env:USERNAME" }
+
 $script:DellRecoveryGpt    = 'de94bba4-06d1-4d40-a16a-bfd50179d6ac'
 $script:DellRecoveryLabels = @('WINRETOOLS', 'Image', 'DELLSUPPORT')
 

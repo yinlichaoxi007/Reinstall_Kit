@@ -13,3 +13,7 @@ scripts/__pycache__/
 *.bak-20261107
 *.bak2-20261107
 *.bak3-20261107
+
+# 本机私有配置与硬件标识（含身份信息，不入库）
+local.config.ps1
+pre-reinstall-identifiers.txt
