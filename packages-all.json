@@ -23,9 +23,6 @@
                                              "PackageIdentifier":  "Tencent.WorkBuddy"
                                          },
                                          {
-                                             "PackageIdentifier":  "DBeaver.DBeaver.Community"
-                                         },
-                                         {
                                              "PackageIdentifier":  "Git.Git"
                                          },
                                          {
@@ -51,9 +48,6 @@
                                          },
                                          {
                                              "PackageIdentifier":  "VideoLAN.VLC"
-                                         },
-                                         {
-                                             "PackageIdentifier":  "qishibo.AnotherRedisDesktopManager"
                                          },
                                          {
                                              "PackageIdentifier":  "Alibaba.QwenWork.CN"
@@ -101,9 +95,6 @@
                                              "PackageIdentifier":  "Graphviz.Graphviz"
                                          },
                                          {
-                                             "PackageIdentifier":  "Inkscape.Inkscape"
-                                         },
-                                         {
                                              "PackageIdentifier":  "LibreCAD.LibreCAD"
                                          },
                                          {
@@ -126,9 +117,6 @@
                                          },
                                          {
                                              "PackageIdentifier":  "EuSoft.Eudic"
-                                         },
-                                         {
-                                             "PackageIdentifier":  "Mobatek.MobaXterm"
                                          },
                                          {
                                              "PackageIdentifier":  "Kingsoft.KDocs"
