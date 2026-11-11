@@ -2,11 +2,11 @@
 <!--
   社区重制版 ISO 无人值守应答文件（保留 Dell 恢复分区版）
   ============================================================================
-  配这支 ISO 用：D:\软件包\系统\Win10_IoT_Enterprise_LTSC_2021_64-Bit_2608.iso
+  配这支社区重制版 ISO 用（路径由 kit.config.json 或 -Iso 指定）
   映像名：Win10 IoT LTSC Founder Edition
         （另一支 Consensus Edition 禁 Defender、卸 Edge，本文件不用它）
 
-  分区策略：只格式化现有的 3 号分区（C:），其余一律不动
+  分区策略：只格式化系统盘上现有的系统分区（C:），其余一律不动
       P1 ESP / P2 MSR / P3 OS（原系统分区）
       P4 WINRETOOLS / P5 Image / P6 DELLSUPPORT（Dell 恢复分区）
       装完这 6 个分区原样保留，F12 一键恢复入口仍在。

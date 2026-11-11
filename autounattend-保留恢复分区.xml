@@ -8,13 +8,13 @@
      更稳妥的等价做法：用 autounattend-手动分区-IoT-LTSC.xml，
            在安装界面里手动只删 C 分区 —— 看得见、可核对。
 
-  使用前提：磁盘 0 的分区布局必须与当前一致
+  使用前提：磁盘 0 的分区布局必须与模板一致（P3 是原系统分区）
        P1 ESP / P2 MSR / P3 OS（原系统分区）
        P4 WINRETOOLS / P5 Image / P6 DELLSUPPORT（Dell 恢复分区）
      布局不符时安装程序会停下报错（WillShowUI=OnError），不会误抹。
 
   已知副作用：
-     · ESP 不重写 → 旧 Win11 的 BCD 条目会残留，指向已格式化的 C:，
+     · ESP 不重写 → 旧系统的 BCD 条目会残留，指向已格式化的 C:，
        属无害死条目，装完可用 bcdedit 清理（可选）。
      · 没有空余空间建新的恢复分区 → WinRE 会落到 C:\Recovery\WindowsRE，
        或复用 P4。功能不受影响，但不再有独立恢复分区。

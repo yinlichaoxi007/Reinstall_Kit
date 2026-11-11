@@ -11,8 +11,8 @@
          P1 ESP
          P2 MSR
          P4 WINRETOOLS     ← 当前系统的 WinRE 就住在这里
-         P5 Image     ← Dell 出厂镜像（Win10 20H2）
-         P6 DELLSUPPORT     ← SupportAssist OS Recovery 环境
+         P5 Image          ← Dell 出厂镜像（Win10 20H2）
+         P6 DELLSUPPORT    ← SupportAssist OS Recovery 环境
        然后选中新出现的「未分配空间」，点下一步。
 
   其余行为与手动分区版一致：跳过 OOBE、建本地管理员 __USER__、自动登录一次

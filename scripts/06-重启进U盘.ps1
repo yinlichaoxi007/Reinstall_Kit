@@ -62,11 +62,11 @@ Write-Host "  ┌─────────────────────
 Write-Host "  │ 1. 听到 Dell logo 后，连续按 F12（一秒一下，别按住）    │" -ForegroundColor Gray
 Write-Host "  │ 2. 启动菜单里选  UEFI: <你的U盘名>                      │" -ForegroundColor Gray
 Write-Host "  │ 3. 进入安装界面后走「自定义：仅安装 Windows」           │" -ForegroundColor Gray
-Write-Host "  │ 4. 分区页：选中系统盘的原系统分区 → 格式化 → 下一步│" -ForegroundColor Gray
-Write-Host "  │    不要删分区、不要点新建、不要碰数据盘      │" -ForegroundColor Gray
+Write-Host "  │ 4. 分区页：选中系统盘的原系统分区 → 格式化 → 下一步    │" -ForegroundColor Gray
+Write-Host "  │    不要删分区、不要点新建、不要碰数据盘                  │" -ForegroundColor Gray
 Write-Host "  └──────────────────────────────────────────────────────────┘" -ForegroundColor DarkGray
 Write-Host ""
-Write-Host "  如果你想拔掉 D 盘 SATA 线（最保险），现在就该关机操作。" -ForegroundColor Yellow
+Write-Host "  如果你想拔掉数据盘 SATA 线（最保险），现在就该关机操作。" -ForegroundColor Yellow
 Write-Host "  如果不拔线，分区页务必只点「格式化」，绝对不要「删除」。" -ForegroundColor Yellow
 Write-Host ""
 
