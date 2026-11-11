@@ -5,14 +5,14 @@
     原则：
       - 只补缺失：目标里已存在的文件一律跳过，绝不覆盖
       - 目标目录不存在才新建；来源不存在则跳过
-      - 恢复完成后执行 2-重建链接.ps1，把 .gitconfig/.ssh 等接回 C 盘用户目录
+      - 恢复完成后执行 重建链接.ps1，把 .gitconfig/.ssh 等接回 C 盘用户目录
 
     默认干跑，只统计「需新增多少文件」，加 -Run 才真正复制。
 
     用法：
-      powershell -ExecutionPolicy Bypass -File 4-从Windows.old恢复.ps1
-      powershell -ExecutionPolicy Bypass -File 4-从Windows.old恢复.ps1 -Run
-      powershell -ExecutionPolicy Bypass -File 4-从Windows.old恢复.ps1 -SkipEdge -Run
+      powershell -ExecutionPolicy Bypass -File 从Windows.old恢复.ps1
+      powershell -ExecutionPolicy Bypass -File 从Windows.old恢复.ps1 -Run
+      powershell -ExecutionPolicy Bypass -File 从Windows.old恢复.ps1 -SkipEdge -Run
 
     日志：<Kit>\logs\restore-windowsold_<时间>.log
 #>
@@ -498,7 +498,7 @@ if (-not $Run) {
     Write-Host ("  powershell -ExecutionPolicy Bypass -File `"{0}`" -Run" -f $MyInvocation.MyCommand.Path) -ForegroundColor Yellow
 }
 else {
-    Write-Host "下一步：执行 2-重建链接.ps1，把 .gitconfig / .ssh 等接回 C 盘用户目录。" -ForegroundColor Yellow
+    Write-Host "下一步：执行 重建链接.ps1，把 .gitconfig / .ssh 等接回 C 盘用户目录。" -ForegroundColor Yellow
 }
 
 Stop-Transcript | Out-Null

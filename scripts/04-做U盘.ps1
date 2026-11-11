@@ -14,9 +14,9 @@
 
     用法：
         开始.cmd  →  4
-        或： powershell -ExecutionPolicy Bypass -File 7-做U盘.ps1
-            powershell -ExecutionPolicy Bypass -File 7-做U盘.ps1 -DryRun
-            powershell -ExecutionPolicy Bypass -File 7-做U盘.ps1 -DriveLetter E
+        或： powershell -ExecutionPolicy Bypass -File 04-做U盘.ps1
+            powershell -ExecutionPolicy Bypass -File 04-做U盘.ps1 -DryRun
+            powershell -ExecutionPolicy Bypass -File 04-做U盘.ps1 -DriveLetter E
 #>
 [CmdletBinding()]
 param(
@@ -426,7 +426,7 @@ foreach ($f in $listing) { Write-Info ("  {0,-40} {1}" -f $f.Name, (Format-Human
 Write-Host ""
 Write-Ok "U 盘做好了。"
 Write-Host ""
-Write-Host "  下一步：菜单 5「重启并进入 U 盘安装」" -ForegroundColor Cyan
+Write-Host "  下一步：菜单 6「重启并进入 U 盘安装」" -ForegroundColor Cyan
 Write-Host "  记得：装之前先确认 D 盘数据盘的状态（拔线 or 手动分区）" -ForegroundColor Yellow
 Write-Host ""
 

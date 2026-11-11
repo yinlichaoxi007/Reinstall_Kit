@@ -7,8 +7,8 @@
 
     用法：
         开始.cmd  →  5
-        或： powershell -ExecutionPolicy Bypass -File 8-重启进U盘.ps1
-            powershell -ExecutionPolicy Bypass -File 8-重启进U盘.ps1 -Seconds 120
+        或： powershell -ExecutionPolicy Bypass -File 06-重启进U盘.ps1
+            powershell -ExecutionPolicy Bypass -File 06-重启进U盘.ps1 -Seconds 120
 #>
 [CmdletBinding()]
 param(

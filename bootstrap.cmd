@@ -58,9 +58,9 @@ echo   数据盘 OK: D:\migration
 echo.
 
 rem ---------- 2. 重建链接 ----------
-echo [3/6] 重建 D 盘数据链接（37 个 junction）...
+echo [3/6] 重建 D 盘数据链接（links.csv 里的 junction）...
 echo ------------------------------------------------------------
-powershell -NoProfile -ExecutionPolicy Bypass -File "%KIT%\scripts\2-重建链接.ps1"
+powershell -NoProfile -ExecutionPolicy Bypass -File "%KIT%\scripts\重建链接.ps1"
 set "RC_LINK=%ERRORLEVEL%"
 echo ------------------------------------------------------------
 if "%RC_LINK%"=="0" (
@@ -72,9 +72,9 @@ echo.
 
 rem ---------- 2.5 链接校验：启动程序前的门禁 ----------
 echo [4/6] 校验链接与数据可达性...
-echo   检查 37 条链接指向是否正确、Joplin 库与附件能不能真读到。
+echo   检查 links.csv 里的链接指向是否正确、Joplin 库与附件能不能真读到。
 echo ------------------------------------------------------------
-powershell -NoProfile -ExecutionPolicy Bypass -File "%KIT%\scripts\16-校验链接.ps1"
+powershell -NoProfile -ExecutionPolicy Bypass -File "%KIT%\scripts\08-校验链接.ps1"
 set "RC_VERIFY=%ERRORLEVEL%"
 echo ------------------------------------------------------------
 if not "%RC_VERIFY%"=="0" (
@@ -86,7 +86,7 @@ if not "%RC_VERIFY%"=="0" (
     echo.
     echo   处理：
     echo     1. 看上面标 FAIL 的那几条；
-    echo     2. 执行 scripts\16-校验链接.ps1 -Fix 自动重建链接；
+    echo     2. 执行 scripts\08-校验链接.ps1 -Fix 自动重建链接；
     echo     3. 修好后重跑本脚本。
     echo.
     pause
@@ -100,7 +100,7 @@ echo [5/6] 批量安装常用软件...
 echo   首批只装办公必需的 16 个包，预计 15-25 分钟。
 echo   网易UU远程排第一位，装好即可远程接管，不必守在机器前。
 echo ------------------------------------------------------------
-powershell -NoProfile -ExecutionPolicy Bypass -File "%KIT%\scripts\3-装软件.ps1" -Manifest packages-min.json
+powershell -NoProfile -ExecutionPolicy Bypass -File "%KIT%\scripts\装软件.ps1" -Manifest packages-min.json
 echo ------------------------------------------------------------
 echo.
 
@@ -112,7 +112,7 @@ echo        net user %USERNAME% *
 echo.
 echo   2) 大体积软件手动装：
 echo        在本目录打开 PowerShell，执行
-echo        powershell -ExecutionPolicy Bypass -File scripts\3-装软件.ps1 -Manifest packages-all.json
+echo        powershell -ExecutionPolicy Bypass -File scripts\装软件.ps1 -Manifest packages-all.json
 echo.
 echo   3) 装完 Dell 驱动后重启一次。
 echo   4) 个人数据从 D:\Reinstall_Kit\backup\ 里按 恢复清单.md 拷回。

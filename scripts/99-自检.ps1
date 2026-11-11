@@ -8,7 +8,7 @@
         3. Python 脚本编译
         4. XML / JSON / CSV 可解析
         5. 依赖文件是否齐
-        6. 安全干跑：0-体检 与 10-回收恢复分区 -Apply -DryRun（都有闸门，不会改东西）
+        6. 安全干跑：01-体检 与 10-回收恢复分区 -Apply -DryRun（都有闸门，不会改东西）
 
     用法：
         开始.cmd  →  0
@@ -172,11 +172,12 @@ if ($SkipRun) {
     Add-Result 'INFO' '干跑' '已按 -SkipRun 跳过'
 } else {
     $runs = @(
-        @{ Name = '0-体检.ps1'; Args = @(); AllowExit = @(0, 1); MustContain = '重装工程包体检' },
+        @{ Name = '01-体检.ps1'; Args = @(); AllowExit = @(0, 1); MustContain = '重装工程包体检' },
         @{ Name = '10-回收恢复分区.ps1'; Args = @('-Apply', '-DryRun'); AllowExit = @(0, 1); MustContain = '闸门' },
         @{ Name = '11-出厂镜像还原.ps1'; Args = @(); AllowExit = @(0, 1); MustContain = '已生成' },
-        @{ Name = '12-准备离线包.ps1'; Args = @('-DryRun'); AllowExit = @(0, 1); MustContain = '准备 winget 离线包' }
-        @{ Name = '16-校验链接.ps1'; Args = @('-SelfTest'); AllowExit = @(0); MustContain = '检测逻辑有效' }
+        @{ Name = '03-准备离线包.ps1'; Args = @('-DryRun'); AllowExit = @(0, 1); MustContain = '准备 winget 离线包' },
+        @{ Name = '08-校验链接.ps1'; Args = @('-SelfTest'); AllowExit = @(0); MustContain = '检测逻辑有效' },
+        @{ Name = '16-扫描链接.ps1'; Args = @('-SelfTest'); AllowExit = @(0); MustContain = '自检结果：全部通过' }
     )
     foreach ($r in $runs) {
         $script = Join-Path $PSScriptRoot $r.Name
@@ -252,7 +253,7 @@ $md += ''
 $md += '## 说明'
 $md += ''
 $md += '- 干跑项只验证「能跑起来、不卡住、走到预期环节」，不会改任何数据。'
-$md += '- 7-做U盘 / 8-重启 需要真实 U 盘与重启，无法自动化，靠人工走一遍。'
+$md += '- 04-做U盘 / 06-重启 需要真实 U 盘与重启，无法自动化，靠人工走一遍。'
 [System.IO.File]::WriteAllText($reportPath, (($md -join "`r`n") + "`r`n"), (New-Object System.Text.UTF8Encoding($true)))
 Write-Info ("报告: " + $reportPath)
 

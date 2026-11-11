@@ -16,4 +16,5 @@ scripts/__pycache__/
 
 # 本机私有配置与硬件标识（含身份信息，不入库）
 local.config.ps1
+backup.local.json
 pre-reinstall-identifiers.txt

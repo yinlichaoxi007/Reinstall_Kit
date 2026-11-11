@@ -3,7 +3,7 @@
     准备 winget 离线安装包（LTSC 必做）
     ============================================================
     Windows 10 IoT LTSC 2021 不带 App Installer，也就没有 winget。
-    重装后第一次跑「3-装软件」时，脚本会从这个目录离线安装。
+    重装后第一次跑「装软件.ps1」时，脚本会从这个目录离线安装。
 
     下载三个文件到 D:\Reinstall_Kit\pkgs\appinstaller\：
         Microsoft.VCLibs.x64.14.00.Desktop.appx        依赖
@@ -12,8 +12,8 @@
 
     用法：
         开始.cmd  →  3
-        或： powershell -ExecutionPolicy Bypass -File 12-准备离线包.ps1
-            powershell -ExecutionPolicy Bypass -File 12-准备离线包.ps1 -Force
+        或： powershell -ExecutionPolicy Bypass -File 03-准备离线包.ps1
+            powershell -ExecutionPolicy Bypass -File 03-准备离线包.ps1 -Force
 #>
 [CmdletBinding()]
 param(
@@ -116,7 +116,7 @@ if ($DryRun) {
     Write-Ok "演练结束，未下载任何文件。"
 } else {
     Write-Ok ("离线包就绪（{0}/3）" -f $okCount)
-    Write-Info "重装后 3-装软件.ps1 会自动从这里装 winget。"
+    Write-Info "重装后 装软件.ps1 会自动从这里装 winget。"
 }
 
 Stop-KitLog

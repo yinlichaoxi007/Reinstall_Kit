@@ -13,9 +13,9 @@
     装系统时：从 WePE 启动 → 右键 ISO「挂载」→ 运行 setup.exe
 
     用法：
-      powershell -ExecutionPolicy Bypass -File 13-拷到WePE盘.ps1
-      powershell -ExecutionPolicy Bypass -File 13-拷到WePE盘.ps1 -DryRun
-      powershell -ExecutionPolicy Bypass -File 13-拷到WePE盘.ps1 -DriveLetter E
+      powershell -ExecutionPolicy Bypass -File 05-拷到WePE盘.ps1
+      powershell -ExecutionPolicy Bypass -File 05-拷到WePE盘.ps1 -DryRun
+      powershell -ExecutionPolicy Bypass -File 05-拷到WePE盘.ps1 -DriveLetter E
 #>
 [CmdletBinding()]
 param(
@@ -112,9 +112,9 @@ if ($isWepe) {
     if (-not (Read-YesNo "仍然继续把文件拷进去吗？")) { Stop-KitLog; exit 1 }
 }
 
-# 如果已经是 Ventoy 盘，提醒走 7-做U盘.ps1 更合适
+# 如果已经是 Ventoy 盘，提醒走 04-做U盘.ps1 更合适
 if (Test-Path -LiteralPath (Join-Path $usbRoot 'ventoy')) {
-    Write-Warn "这个盘看起来装过 Ventoy —— 那种情况直接用 7-做U盘.ps1 更合适（它只覆盖同名 ISO，也不格式化）。"
+    Write-Warn "这个盘看起来装过 Ventoy —— 那种情况直接用 04-做U盘.ps1 更合适（它只覆盖同名 ISO，也不格式化）。"
     if (-not (Read-YesNo "仍要按 WePE 方式拷文件？")) { Stop-KitLog; exit 1 }
 }
 

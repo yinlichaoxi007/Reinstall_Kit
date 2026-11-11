@@ -18,15 +18,15 @@
     真正执行。不加则全部为干跑。
 
 .EXAMPLE
-    .\20-内存瘦身.ps1
+    .\12-内存瘦身.ps1
     只看报告。
 
 .EXAMPLE
-    .\20-内存瘦身.ps1 -RestartExplorer -Apply
+    .\12-内存瘦身.ps1 -RestartExplorer -Apply
     只重启 explorer，立即回收内存。
 
 .EXAMPLE
-    .\20-内存瘦身.ps1 -BlockShellExt -TrimServices -Apply
+    .\12-内存瘦身.ps1 -BlockShellExt -TrimServices -Apply
     屏蔽百度网盘/WPS 的 shell 扩展并停用 Dell 预装服务。
 
 .NOTES
@@ -539,7 +539,7 @@ if (-not $didSomething) {
     Say '  -Undo              还原本次备份' 'White'
     Say ''
     Say '  以上都要配 -Apply 才真正执行。' 'DarkGray'
-    Say '  例：.\20-内存瘦身.ps1 -RestartExplorer -Apply' 'White'
+    Say '  例：.\12-内存瘦身.ps1 -RestartExplorer -Apply' 'White'
 }
 
 Say ''

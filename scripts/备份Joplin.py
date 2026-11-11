@@ -5,10 +5,10 @@ Joplin 笔记库备份（一致快照）
 默认「干跑」：只打印计划，不动任何文件。
 确认后加 --run 才真正备份。
 
-    python 15-备份Joplin.py                    # 看计划
-    python 15-备份Joplin.py --run              # 备份库+设置+插件（约 200 MB）
-    python 15-备份Joplin.py --run --with-resources   # 连 4.5 GB 附件一起（约 4.8 GB）
-    python 15-备份Joplin.py --run --zip        # 打包成一个 zip
+    python 备份Joplin.py                    # 看计划
+    python 备份Joplin.py --run              # 备份库+设置+插件（约 200 MB）
+    python 备份Joplin.py --run --with-resources   # 连 4.5 GB 附件一起（约 4.8 GB）
+    python 备份Joplin.py --run --zip        # 打包成一个 zip
 
 为什么要专门写一个脚本：
   Joplin 运行时一直往 database.sqlite 里写（WAL 模式），直接 copy 可能拿到
@@ -219,7 +219,7 @@ def main():
     if not args.run:
         print("")
         print("  这是干跑。确认无误后加 --run 真正执行。")
-        print("  （开始.cmd 菜单 13 会带着 --run 调这个脚本）")
+        print("  （开始.cmd 菜单 2 → 选分类 → joplin 会带着 --run 调这个脚本）")
         return 0
 
     # ---------------------------------------------------------------- 执行

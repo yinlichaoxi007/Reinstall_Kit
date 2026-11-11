@@ -2,7 +2,7 @@
 <#
     重建 junction 链接（阶段 3）
     ============================================================
-    读取 links.csv，把 37 个「已迁移到 D 盘」的目录重新接回 C 盘用户目录。
+    读取 links.csv，把「已迁移到 D 盘」的目录重新接回 C 盘用户目录。
 
     安全策略：
       - 目标（D 盘）不存在  -> 跳过并告警，绝不在 D 盘造空目录
@@ -11,8 +11,8 @@
       - C 盘该位置已是正确链接 -> 跳过
 
     用法：
-      powershell -ExecutionPolicy Bypass -File 2-重建链接.ps1
-      powershell -ExecutionPolicy Bypass -File 2-重建链接.ps1 -WhatIfOnly
+      powershell -ExecutionPolicy Bypass -File 重建链接.ps1
+      powershell -ExecutionPolicy Bypass -File 重建链接.ps1 -WhatIfOnly
 #>
 [CmdletBinding()]
 param(

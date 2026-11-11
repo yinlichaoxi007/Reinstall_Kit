@@ -6,9 +6,9 @@
     winget 不可用时自动装 Chocolatey 兜底。
 
     用法：
-      powershell -ExecutionPolicy Bypass -File 3-装软件.ps1
-      powershell -ExecutionPolicy Bypass -File 3-装软件.ps1 -Manifest packages-all.json
-      powershell -ExecutionPolicy Bypass -File 3-装软件.ps1 -SkipHeavy      # 跳过 VS/JetBrains/Unity/Docker
+      powershell -ExecutionPolicy Bypass -File 装软件.ps1
+      powershell -ExecutionPolicy Bypass -File 装软件.ps1 -Manifest packages-all.json
+      powershell -ExecutionPolicy Bypass -File 装软件.ps1 -SkipHeavy      # 跳过 VS/JetBrains/Unity/Docker
 
     结果输出：<Kit>\logs\安装结果_<时间>.md
 #>
@@ -427,7 +427,7 @@ if ($uuResult) {
     else {
         Say "  [!!] 没装上 —— 现在还不能远程，必须先手动解决这一项" 'Red'
         Say  "       手动下载：https://uuyc.163.com/" 'Yellow'
-        Say  "       装完再回来跑：powershell -ExecutionPolicy Bypass -File scripts\3-装软件.ps1 -Manifest packages-min.json" 'Yellow'
+        Say  "       装完再回来跑：powershell -ExecutionPolicy Bypass -File scripts\装软件.ps1 -Manifest packages-min.json" 'Yellow'
     }
 }
 

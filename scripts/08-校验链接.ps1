@@ -1,22 +1,22 @@
 ﻿#requires -Version 5.1
 <#
-    16-校验链接.ps1  ——  启动程序前的最后一道校验
+    08-校验链接.ps1  ——  启动程序前的最后一道校验
     ============================================================
     解决什么问题：
-      2-重建链接.ps1 只检查「这个位置是不是链接」，
+      重建链接.ps1 只检查「这个位置是不是链接」，
       但不检查「链接指得对不对」「指过去之后数据读不读得到」。
       链接指错的后果是静默的：Joplin 会在 C 盘建一个空库，
       你以为笔记丢了；VSCode 会把插件写到 C 盘，重装又没了。
 
     本脚本检查三层：
-      [1] 37 条链接：存在 / 是 junction / 指向与 links.csv 一致 / 目标可达
+      [1] links.csv 里的每一条链接：存在 / 是 junction / 指向与清单一致 / 目标可达
       [2] 关键数据深度校验：Joplin 的库、附件、设置、插件是否真的能读到
       [3] 危险残留：C 盘是否已生成过实体 profile、是否有上次改名留下的 .local-*
 
     用法：
-      powershell -ExecutionPolicy Bypass -File scripts\16-校验链接.ps1
-      powershell -ExecutionPolicy Bypass -File scripts\16-校验链接.ps1 -Fix     # 自动重建后复验
-      powershell -ExecutionPolicy Bypass -File scripts\16-校验链接.ps1 -SelfTest # 验证检测逻辑本身有效
+      powershell -ExecutionPolicy Bypass -File scripts\08-校验链接.ps1
+      powershell -ExecutionPolicy Bypass -File scripts\08-校验链接.ps1 -Fix     # 自动重建后复验
+      powershell -ExecutionPolicy Bypass -File scripts\08-校验链接.ps1 -SelfTest # 验证检测逻辑本身有效
 
     退出码：0 = 全部通过；1 = 有 FAIL；2 = 环境问题（找不到清单等）
     不需要管理员权限。
@@ -41,6 +41,18 @@ $csvCandidates = @(
 )
 $csvPath = $null
 foreach ($c in $csvCandidates) { if (Test-Path -LiteralPath $c) { $csvPath = $c; break } }
+
+# 迁移根目录：与 重建链接.ps1 同一口径，优先读本机私有配置，缺省按当前用户名推断
+$MigrationRoot = $null
+$configFile = Join-Path $kitRoot 'local.config.ps1'
+if (Test-Path -LiteralPath $configFile) { . $configFile }
+if (-not $MigrationRoot) { $MigrationRoot = Join-Path 'D:\migration\C\Users' $env:USERNAME }
+
+function Expand-Target {
+    <# 把 %MIGROOT% 与 %USERPROFILE% 等占位展开成本机实际路径 #>
+    param([string]$Target)
+    return [Environment]::ExpandEnvironmentVariables($Target.Replace('%MIGROOT%', $MigrationRoot))
+}
 
 function Say {
     param([string]$Msg, [string]$Color = 'Gray')
@@ -83,7 +95,7 @@ function Test-AllLinks {
 
     foreach ($row in $Rows) {
         $rel    = [string]$row.rel
-        $expect = [string]$row.target
+        $expect = Expand-Target ([string]$row.target)
         $link   = Join-Path $env:USERPROFILE $rel
 
         if (-not (Test-Path -LiteralPath $link)) {
@@ -333,8 +345,8 @@ if ($SelfTest) {
 
 if ($summary.Fail -gt 0 -and $Fix) {
     Say ""
-    Say "--- 发现 $($summary.Fail) 项失败，自动调用 2-重建链接.ps1 修复 ---" 'Yellow'
-    $rebuild = Join-Path $scriptDir '2-重建链接.ps1'
+    Say "--- 发现 $($summary.Fail) 项失败，自动调用 重建链接.ps1 修复 ---" 'Yellow'
+    $rebuild = Join-Path $scriptDir '重建链接.ps1'
     if (Test-Path -LiteralPath $rebuild) {
         & powershell -NoProfile -ExecutionPolicy Bypass -File $rebuild
         Say ""
@@ -355,5 +367,5 @@ if ($summary.Fail -eq 0) {
 
 Say ""
 Say "有 $($summary.Fail) 项失败，先别装、别启动程序。" 'Red'
-Say "  自动修复：powershell -ExecutionPolicy Bypass -File scripts\16-校验链接.ps1 -Fix" 'Yellow'
+Say "  自动修复：powershell -ExecutionPolicy Bypass -File scripts\08-校验链接.ps1 -Fix" 'Yellow'
 exit 1

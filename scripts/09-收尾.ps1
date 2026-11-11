@@ -3,7 +3,7 @@
     重装后收尾检查
     ============================================================
     跑完 bootstrap（重建链接 + 装软件）之后用这个脚本核对一遍：
-        · 37 条链接是不是都真的接上了
+        · links.csv 里的链接是不是都真的接上了
         · C 盘空间、D 盘盘符对不对
         · 激活状态
         · 备份数据要不要拷回来（默认只看不拷）
@@ -11,8 +11,8 @@
 
     用法：
         开始.cmd  →  7
-        或： powershell -ExecutionPolicy Bypass -File 9-收尾.ps1
-            powershell -ExecutionPolicy Bypass -File 9-收尾.ps1 -RestoreData
+        或： powershell -ExecutionPolicy Bypass -File 09-收尾.ps1
+            powershell -ExecutionPolicy Bypass -File 09-收尾.ps1 -RestoreData
 #>
 [CmdletBinding()]
 param(
@@ -56,7 +56,7 @@ if (-not $d) {
 }
 
 # ================================================================= 2 链接
-Write-Step "2. 链接（37 条）"
+Write-Step "2. 链接（links.csv）"
 
 $csvPath = Join-Path $script:KitRoot 'links.csv'
 if (Test-Path -LiteralPath $csvPath) {
@@ -75,7 +75,7 @@ if (Test-Path -LiteralPath $csvPath) {
         Write-Warn ("{0}/{1} 条正常，{2} 条有问题：" -f $ok, @($rows).Count, $bad.Count)
         foreach ($b in $bad) { Write-Info ("    " + $b) }
         $null = $issues.Add("$($bad.Count) 条链接异常")
-        Write-Info "修复：菜单 6（重跑 2-重建链接.ps1，已存在的会自动跳过）"
+        Write-Info "修复：菜单 7（重跑 重建链接.ps1，已存在的会自动跳过）"
     }
 } else {
     Write-Warn "links.csv 不存在"
@@ -112,7 +112,7 @@ if ($resultLogs.Count -gt 0) {
     Write-Info ("最近一次安装记录: " + $resultLogs[0].Name)
     Write-Info ("  " + $resultLogs[0].FullName)
 } else {
-    Write-Warn "还没有安装记录 —— 可能 3-装软件 没跑过"
+    Write-Warn "还没有安装记录 —— 可能 装软件.ps1 没跑过"
     $null = $issues.Add('软件安装未执行')
 }
 
@@ -171,10 +171,10 @@ else {
 
 Write-Host ""
 Write-Host "  建议顺序：" -ForegroundColor Cyan
-Write-Host "    · 菜单 10/11  内存瘦身与 explorer 守护（重装后重跑一次）"
+Write-Host "    · 菜单 12/13  内存瘦身与 explorer 守护（重装后重跑一次）"
 Write-Host "    · 装 Dell 驱动：Dell Command Update 一键补齐"
 Write-Host "    · 设密码：net user $env:USERNAME *  （现在是空密码）"
-Write-Host "    · 用一个月没问题，再考虑菜单 8 回收那 18 GB"
+Write-Host "    · 用一个月没问题，再考虑菜单 10 回收那 18 GB"
 Write-Host ""
 
 Stop-KitLog

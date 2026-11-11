@@ -1,0 +1,30 @@
+{
+  "_说明": "扫描链接的配置。roots 支持环境变量；excludeDirs 是相对用户目录、不再向下扫描的目录（目录本身若是链接仍会被发现）；migrationRoot 留空则用 local.config.ps1 的 $MigrationRoot。",
+  "migrationRoot": "",
+  "roots": ["%USERPROFILE%"],
+  "maxDepth": 4,
+  "ignoreRelPatterns": [
+    "(?i)\\.junction-\\d+$"
+  ],
+  "excludeDirs": [
+    "AppData\\Local\\Packages",
+    "AppData\\Local\\Temp",
+    "AppData\\Local\\Microsoft\\Windows",
+    "AppData\\Local\\Microsoft\\Edge",
+    "AppData\\Local\\Google",
+    "AppData\\Local\\Programs",
+    "AppData\\Local\\JetBrains",
+    "AppData\\Local\\Docker",
+    ".cache",
+    ".npm",
+    ".m2",
+    ".local",
+    "Documents",
+    "Desktop",
+    "Downloads",
+    "Pictures",
+    "Videos",
+    "Music",
+    "OneDrive"
+  ]
+}

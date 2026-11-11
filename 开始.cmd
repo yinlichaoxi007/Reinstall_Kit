@@ -2,26 +2,26 @@
 chcp 936 >nul 2>&1
 setlocal enabledelayedexpansion
 set "EMPTY=0"
-title Reinstall Kit - Windows 10 é‡è£…å·¥ç¨‹åŒ…
+title Reinstall Kit - Windows 10 ÖØ×°¹¤³Ì°ü
 color 0B
 
 set "KIT=%~dp0"
 if "%KIT:~-1%"=="\" set "KIT=%KIT:~0,-1%"
 
-rem ---------- è‡ªåŠ¨ææƒ ----------
+rem ---------- ×Ô¶¯ÌáÈ¨ ----------
 net session >nul 2>&1
 if errorlevel 1 (
     if defined KIT_NOELEVATE (
-        echo   [æµ‹è¯•æ¨¡å¼] è·³è¿‡ææƒ
+        echo   [²âÊÔÄ£Ê½] Ìø¹ýÌáÈ¨
     ) else (
         echo.
-        echo   éœ€è¦ç®¡ç†å‘˜æƒé™ï¼Œæ­£åœ¨å¼¹å‡ºæŽˆæƒçª—å£ï¼Œè¯·ç‚¹ã€Œæ˜¯ã€...
+        echo   ÐèÒª¹ÜÀíÔ±È¨ÏÞ£¬ÕýÔÚµ¯³öÊÚÈ¨´°¿Ú£¬Çëµã¡¸ÊÇ¡¹...
         powershell -NoProfile -Command "Start-Process -FilePath '%~f0' -Verb RunAs" >nul 2>&1
         exit /b
     )
 )
 
-rem ---------- æ‰¾ python ----------
+rem ---------- ÕÒ python ----------
 set "PY="
 for %%P in (python.exe) do if not defined PY if exist "%%~$PATH:P" set "PY=%%~$PATH:P"
 if not defined PY if exist "%USERPROFILE%\.workbuddy\binaries\python\versions\3.13.12\python.exe" set "PY=%USERPROFILE%\.workbuddy\binaries\python\versions\3.13.12\python.exe"
@@ -33,45 +33,47 @@ set "PSRUN=powershell -NoProfile -ExecutionPolicy Bypass -File"
 cls
 echo.
 echo ================================================================
-echo    Windows 10 é‡è£…å·¥ç¨‹åŒ…
-echo    å·¥ç¨‹ç›®å½•: %KIT%
+echo    Windows 10 ÖØ×°¹¤³Ì°ü
+echo    ¹¤³ÌÄ¿Â¼: %KIT%
 echo ================================================================
 echo.
-echo   ã€å‡†å¤‡é˜¶æ®µ Â· çŽ°åœ¨è¿™å°æœºå™¨ä¸Šè·‘ã€‘
-echo     1   å…¨æµç¨‹ä½“æ£€ï¼ˆåªè¯»ï¼Œå…ˆè·‘è¿™ä¸ªï¼‰
-echo     2   å¤‡ä»½ C ç›˜æ¼ç½‘æ•°æ®
-echo     3   å‡†å¤‡ winget ç¦»çº¿åŒ…
-echo     4   åˆ¶ä½œ Ventoy å®‰è£…ç›˜ï¼ˆä¼šæ¸…ç©ºæ•´åª U ç›˜ï¼‰
-echo     12  æ‹·åˆ°å·²æœ‰ WePE ç›˜ï¼ˆä¸åŠ¨åˆ†åŒºï¼ŒæŽ¨èï¼‰
-echo     13  å¤‡ä»½ Joplin ç¬”è®°åº“ï¼ˆåº“+è®¾ç½®+æ’ä»¶ï¼Œçº¦ 190 MBï¼‰
-echo     14  å¤‡ä»½ Joplinï¼ˆè¿ž 4.5 GB é™„ä»¶ï¼Œæ…¢ä¸€äº›ï¼‰
-echo     5   é‡å¯å¹¶è¿›å…¥ U ç›˜å®‰è£…
+echo   ¡¾×¼±¸½×¶Î ¡¤ ÏÖÔÚÕâÌ¨»úÆ÷ÉÏÅÜ¡¿
+echo     1   È«Á÷³ÌÌå¼ì£¨Ö»¶Á£¬ÏÈÅÜÕâ¸ö£©
+echo     2   ±¸·Ý C ÅÌÂ©ÍøÊý¾Ý
+echo     3   ×¼±¸ winget ÀëÏß°ü
+echo     4   ÖÆ×÷ Ventoy °²×°ÅÌ£¨»áÇå¿ÕÕûÖ» U ÅÌ£©
+echo     5   ¿½µ½ÒÑÓÐ WePE ÅÌ£¨²»¶¯·ÖÇø£¬ÍÆ¼ö£©
+echo     6   ÖØÆô²¢½øÈë U ÅÌ°²×°
 echo.
-echo   ã€é‡è£…ä¹‹åŽã€‘
-echo     6   é‡å»ºé“¾æŽ¥ + æ‰¹é‡è£…è½¯ä»¶
-echo     15  æ ¡éªŒé“¾æŽ¥ä¸Žæ•°æ®å¯è¾¾ï¼ˆè£…ç¨‹åºå‰å…ˆè·‘ï¼‰
-echo     7   æ”¶å°¾æ£€æŸ¥ï¼ˆé“¾æŽ¥/æ¿€æ´»/æ•°æ®æ¢å¤ï¼‰
+echo   ¡¾ÖØ×°Ö®ºó¡¿
+echo     7   ÖØ½¨Á´½Ó + ÅúÁ¿×°Èí¼þ
+echo     8   Ð£ÑéÁ´½ÓÓëÊý¾Ý¿É´ï£¨×°³ÌÐòÇ°ÏÈÅÜ£©
+echo     9   ÊÕÎ²¼ì²é£¨Á´½Ó/¼¤»î/Êý¾Ý»Ö¸´£©
 echo.
-echo   ã€å±é™©æ“ä½œ Â· éœ€è¦å¤šé‡ç¡®è®¤ã€‘
-echo     8   å›žæ”¶ Dell æ¢å¤åˆ†åŒºï¼ˆæŠŠ 18GB è¿˜ç»™ C ç›˜ï¼‰
-echo     9   ä»Žå‡ºåŽ‚é•œåƒè¿˜åŽŸç³»ç»Ÿï¼ˆå›žæ»šï¼‰
+echo   ¡¾Î£ÏÕ²Ù×÷ ¡¤ ÐèÒª¶àÖØÈ·ÈÏ¡¿
+echo    10  »ØÊÕ Dell »Ö¸´·ÖÇø£¨°Ñ 18GB »¹¸ø C ÅÌ£©
+echo    11  ´Ó³ö³§¾µÏñ»¹Ô­ÏµÍ³£¨»Ø¹ö£©
 echo.
-echo   ã€è¾…åŠ©è„šæœ¬ Â· Win11 å†…å­˜ç»´æŠ¤ï¼ˆéžé‡è£…å¿…éœ€ï¼‰ã€‘
-echo    20  å†…å­˜ç˜¦èº« Â· åªçœ‹æŠ¥å‘Š / æ‰§è¡Œ
-echo    21  explorer å¥æŸ„å®ˆæŠ¤ Â· çœ‹çŠ¶æ€ / é‡å¯
-echo    22  å›žæ”¶å·²æäº¤å†…å­˜ Â· æ¼”ç»ƒ / æ‰§è¡Œ
+echo   ¡¾¸¨Öú½Å±¾ ¡¤ Win11 ÄÚ´æÎ¬»¤£¨·ÇÖØ×°±ØÐè£©¡¿
+echo    12  ÄÚ´æÊÝÉí ¡¤ Ö»¿´±¨¸æ / Ö´ÐÐ
+echo    13  explorer ¾ä±úÊØ»¤ ¡¤ ¿´×´Ì¬ / ÖØÆô
+echo    14  »ØÊÕÒÑÌá½»ÄÚ´æ ¡¤ ÑÝÁ· / Ö´ÐÐ
 echo.
-echo     0   è‡ªæ£€æ‰€æœ‰è„šæœ¬ï¼ˆæ”¹äº†è„šæœ¬ä¹‹åŽè·‘ï¼‰
-echo     H   æ‰“å¼€é‡è£…æ€»æ‰‹å†Œ
-echo     Q   é€€å‡º
+echo   ¡¾Î¬»¤ ¡¤ ËæÊ±¿ÉÅÜ¡¿
+echo    15  Çå¿Õ»ØÊÕÕ¾£¨Ñ¡ÅÌ£¬Ä¬ÈÏÈ«²¿£©
+echo    16  É¨Ãè / ¼ÇÂ¼Á´½Ó£¨Î¬»¤ links.csv£©
+echo.
+echo     0   ×Ô¼ìËùÓÐ½Å±¾£¨¸ÄÁË½Å±¾Ö®ºóÅÜ£©
+echo     H   ´ò¿ªÖØ×°×ÜÊÖ²á
+echo     Q   ÍË³ö
 echo.
 set "CH="
-set /p CH=è¯·è¾“å…¥ç¼–å·åŽå›žè½¦:
+set /p CH=ÇëÊäÈë±àºÅºó»Ø³µ:
 if not defined CH (
     set /a "EMPTY+=1"
     if !EMPTY! geq 3 (
         echo.
-        echo   è¿žç»­ç©ºè¾“å…¥ï¼Œé€€å‡ºã€‚
+        echo   Á¬Ðø¿ÕÊäÈë£¬ÍË³ö¡£
         exit /b 0
     )
     goto menu
@@ -87,15 +89,13 @@ if /i "%CH%"=="6" goto m6
 if /i "%CH%"=="7" goto m7
 if /i "%CH%"=="8" goto m8
 if /i "%CH%"=="9" goto m9
-if /i "%CH%"=="10" goto m20
-if /i "%CH%"=="11" goto m22
+if /i "%CH%"=="10" goto m10
+if /i "%CH%"=="11" goto m11
 if /i "%CH%"=="12" goto m12
 if /i "%CH%"=="13" goto m13
 if /i "%CH%"=="14" goto m14
 if /i "%CH%"=="15" goto m15
-if /i "%CH%"=="20" goto m20
-if /i "%CH%"=="21" goto m21
-if /i "%CH%"=="22" goto m22
+if /i "%CH%"=="16" goto m16
 if /i "%CH%"=="0" goto m0
 if /i "%CH%"=="H" goto mh
 if /i "%CH%"=="Q" exit /b 0
@@ -104,227 +104,264 @@ goto menu
 rem ================================================================
 :m1
 cls
-%PSRUN% "%KIT%\scripts\0-ä½“æ£€.ps1"
+%PSRUN% "%KIT%\scripts\01-Ìå¼ì.ps1"
 goto done
 
 :m2
 cls
 echo.
-echo  å¤‡ä»½æœ‰ä¸¤ç§è·‘æ³•ï¼š
-echo    1  å…ˆçœ‹è®¡åˆ’ï¼ˆä¸åŠ¨ä»»ä½•æ–‡ä»¶ï¼‰
-echo    2  ç›´æŽ¥å¼€å§‹å¤‡ä»½ï¼ˆçº¦ 4.8 GBï¼Œ10~30 åˆ†é’Ÿï¼‰
-echo    0  è¿”å›ž
+echo  ±¸·Ý C ÅÌÂ©ÍøÊý¾Ý£¨·ÖÀàÓÉ backup.config.json ¶¨Òå£©£º
+echo    1  ¿´¼Æ»® ¡¤ È«²¿Ä¬ÈÏ·ÖÀà£¨²»¶¯ÈÎºÎÎÄ¼þ£©
+echo    2  ¿´¼Æ»® ¡¤ ÏÈÑ¡·ÖÀà
+echo    3  Ö±½Ó±¸·Ý ¡¤ È«²¿Ä¬ÈÏ·ÖÀà
+echo    4  Ö±½Ó±¸·Ý ¡¤ ÏÈÑ¡·ÖÀà
+echo    0  ·µ»Ø
 echo.
 set "S="
-set /p S=é€‰æ‹©:
+set /p S=Ñ¡Ôñ:
 if "%S%"=="1" (
     if not defined PY (
-        echo [é”™è¯¯] æ²¡æ‰¾åˆ° pythonï¼Œæ— æ³•è¿è¡Œå¤‡ä»½è„šæœ¬
+        echo [´íÎó] Ã»ÕÒµ½ python£¬ÎÞ·¨ÔËÐÐ±¸·Ý½Å±¾
         goto done
     )
-    "%PY%" "%KIT%\scripts\1-å¤‡ä»½.py"
+    "%PY%" "%KIT%\scripts\02-±¸·Ý.py"
     goto done
 )
 if "%S%"=="2" (
     if not defined PY (
-        echo [é”™è¯¯] æ²¡æ‰¾åˆ° pythonï¼Œæ— æ³•è¿è¡Œå¤‡ä»½è„šæœ¬
+        echo [´íÎó] Ã»ÕÒµ½ python£¬ÎÞ·¨ÔËÐÐ±¸·Ý½Å±¾
+        goto done
+    )
+    "%PY%" "%KIT%\scripts\02-±¸·Ý.py" --select
+    if errorlevel 3 goto m2
+    goto done
+)
+if "%S%"=="3" (
+    if not defined PY (
+        echo [´íÎó] Ã»ÕÒµ½ python£¬ÎÞ·¨ÔËÐÐ±¸·Ý½Å±¾
         goto done
     )
     echo.
-    echo   å¼€å§‹å¤‡ä»½ï¼ŒæœŸé—´ä¸è¦å…³é—­çª—å£ã€‚å®ŒæˆåŽä¼šæ˜¾ç¤ºè½ç‚¹ç›®å½•ã€‚
+    echo   ¿ªÊ¼±¸·Ý£¬ÆÚ¼ä²»Òª¹Ø±Õ´°¿Ú¡£Íê³Éºó»áÏÔÊ¾ÂäµãÄ¿Â¼¡£
     echo.
-    "%PY%" "%KIT%\scripts\1-å¤‡ä»½.py" --run
+    "%PY%" "%KIT%\scripts\02-±¸·Ý.py" --run
+    goto done
+)
+if "%S%"=="4" (
+    if not defined PY (
+        echo [´íÎó] Ã»ÕÒµ½ python£¬ÎÞ·¨ÔËÐÐ±¸·Ý½Å±¾
+        goto done
+    )
+    "%PY%" "%KIT%\scripts\02-±¸·Ý.py" --select --run
+    if errorlevel 3 goto m2
     goto done
 )
 goto menu
 
 :m3
 cls
-%PSRUN% "%KIT%\scripts\12-å‡†å¤‡ç¦»çº¿åŒ….ps1"
+%PSRUN% "%KIT%\scripts\03-×¼±¸ÀëÏß°ü.ps1"
 goto done
 
 :m4
 cls
-%PSRUN% "%KIT%\scripts\7-åšUç›˜.ps1"
+%PSRUN% "%KIT%\scripts\04-×öUÅÌ.ps1"
 goto done
 
 :m5
 cls
-%PSRUN% "%KIT%\scripts\8-é‡å¯è¿›Uç›˜.ps1"
+%PSRUN% "%KIT%\scripts\05-¿½µ½WePEÅÌ.ps1"
 goto done
 
 :m6
 cls
-call "%KIT%\bootstrap.cmd"
+%PSRUN% "%KIT%\scripts\06-ÖØÆô½øUÅÌ.ps1"
 goto done
 
 :m7
 cls
-%PSRUN% "%KIT%\scripts\9-æ”¶å°¾.ps1"
+call "%KIT%\bootstrap.cmd"
 goto done
 
 :m8
 cls
+echo   Ð£Ñé links.csv ÀïµÄÁ´½ÓÖ¸ÏòÊÇ·ñÕýÈ·£¬ÒÔ¼° Joplin ¿â/¸½¼þÄÜ·ñÕæ¶Áµ½¡£
+echo   ×°ÈÎºÎ³ÌÐòÖ®Ç°¶¼Ó¦¸ÃÏÈÅÜÕâ¸ö£»Á´½Ó²»¶Ô¾Í×°£¬Êý¾Ý»áÐ´µ½ C ÅÌ¡£
 echo.
-echo ================================================================
-echo    å±é™©ï¼šå›žæ”¶ Dell æ¢å¤åˆ†åŒº
-echo ================================================================
+echo     1   Ö»Ð£Ñé£¨Ä¬ÈÏ£©
+echo     2   Ð£Ñé + ·¢ÏÖÒì³£Ê±×Ô¶¯ÖØ½¨Á´½Ó
 echo.
-echo    è¿™ä¸ªæ“ä½œä¼šåˆ é™¤ NVMe ä¸Šçš„ä¸‰ä¸ª Dell æ¢å¤åˆ†åŒºï¼ŒæŠŠ 18 GB å¹¶å›ž C ç›˜ã€‚
-echo    åˆ é™¤åŽï¼š
-echo      - F12 é‡Œçš„ Factory Image Restore ä¸€é”®å…¥å£æ°¸ä¹…æ¶ˆå¤±
-echo      - åªèƒ½é  D:\Reinstall_Kit\DellFactoryImage æ‰‹å·¥è¿˜åŽŸ
-echo.
-echo    è„šæœ¬è‡ªå·±ä¼šæ£€æŸ¥ï¼šç³»ç»Ÿæ˜¯ä¸æ˜¯å·²é‡è£…ã€å¤‡ä»½æ˜¯ä¸æ˜¯å®Œæ•´ã€
-echo    åˆ†åŒºæ˜¯ä¸æ˜¯çœŸçš„ Dell é‚£ä¸‰ä¸ªã€‚ä»»ä½•ä¸€æ¡ä¸æ»¡è¶³éƒ½ä¼šæ‹’ç»æ‰§è¡Œã€‚
-echo.
-echo    è„šæœ¬é‡Œè¿˜æœ‰å››é“äººå·¥ç¡®è®¤ï¼ˆDELETE / åˆ é™¤æ¢å¤åˆ†åŒº / å€’è®¡æ—¶ï¼‰ã€‚
-echo.
-set "DC="
-set /p DC=å¦‚æžœä½ å·²ç»æƒ³æ¸…æ¥šï¼Œè¾“å…¥ DANGER ç»§ç»­ï¼ˆç›´æŽ¥å›žè½¦è¿”å›žï¼‰:
-if /i not "%DC%"=="DANGER" goto menu
-cls
-%PSRUN% "%KIT%\scripts\10-å›žæ”¶æ¢å¤åˆ†åŒº.ps1" -Apply
+set /p S=Ñ¡Ôñ£¨Ö±½Ó»Ø³µ=1£©: 
+if /i "%S%"=="2" goto m8fix
+%PSRUN% "%KIT%\scripts\08-Ð£ÑéÁ´½Ó.ps1"
+goto done
+
+:m8fix
+%PSRUN% "%KIT%\scripts\08-Ð£ÑéÁ´½Ó.ps1" -Fix
 goto done
 
 :m9
 cls
-echo.
-echo   è¿™æ˜¯"å›žæ»šåˆ°å‡ºåŽ‚ç³»ç»Ÿ"ç”¨çš„ï¼šä¼šç”Ÿæˆä¸€ä¸ª WinPE é‡Œè¿è¡Œçš„æ‰¹å¤„ç†ã€‚
-echo    1  æ£€æŸ¥å¤‡ä»½å®Œæ•´æ€§å¹¶ç”Ÿæˆ è¿˜åŽŸå‡ºåŽ‚ç³»ç»Ÿ.cmd
-echo    2  é¡ºä¾¿åš SHA256 æ·±åº¦æ ¡éªŒï¼ˆ16 åˆ†é’Ÿï¼‰
-echo    0  è¿”å›ž
-echo.
-set "S="
-set /p S=é€‰æ‹©:
-if "%S%"=="1" (
-    %PSRUN% "%KIT%\scripts\11-å‡ºåŽ‚é•œåƒè¿˜åŽŸ.ps1"
-    goto done
-)
-if "%S%"=="2" (
-    %PSRUN% "%KIT%\scripts\11-å‡ºåŽ‚é•œåƒè¿˜åŽŸ.ps1" -DeepVerify
-    goto done
-)
-goto menu
+%PSRUN% "%KIT%\scripts\09-ÊÕÎ².ps1"
+goto done
 
-:m20
+:m10
 cls
 echo.
-echo   å†…å­˜ç˜¦èº« / explorer å®ˆæŠ¤ï¼ˆWin11 ä¸“ç”¨ï¼Œè¾…åŠ©è„šæœ¬ï¼‰ï¼š
-echo    1  å†…å­˜ç˜¦èº« Â· åªçœ‹æŠ¥å‘Šï¼ˆ30 ç§’é‡‡æ ·ï¼‰
-echo    2  å†…å­˜ç˜¦èº« Â· æ‰§è¡Œï¼ˆå…³æœåŠ¡/å¯åŠ¨é¡¹å‰ä¼šé—®ä½ ï¼‰
-echo    0  è¿”å›ž
+echo ================================================================
+echo    Î£ÏÕ£º»ØÊÕ Dell »Ö¸´·ÖÇø
+echo ================================================================
 echo.
-set "S="
-set /p S=é€‰æ‹©:
-if "%S%"=="1" (
-    %PSRUN% "%KIT%\scripts\20-å†…å­˜ç˜¦èº«.ps1"
-    goto done
-)
-if "%S%"=="2" (
-    %PSRUN% "%KIT%\scripts\20-å†…å­˜ç˜¦èº«.ps1" -Apply
-    goto done
-)
-goto menu
+echo    Õâ¸ö²Ù×÷»áÉ¾³ý NVMe ÉÏµÄÈý¸ö Dell »Ö¸´·ÖÇø£¬°Ñ 18 GB ²¢»Ø C ÅÌ¡£
+echo    É¾³ýºó£º
+echo      - F12 ÀïµÄ Factory Image Restore Ò»¼üÈë¿ÚÓÀ¾ÃÏûÊ§
+echo      - Ö»ÄÜ¿¿ D:\Reinstall_Kit\DellFactoryImage ÊÖ¹¤»¹Ô­
+echo.
+echo    ½Å±¾×Ô¼º»á¼ì²é£ºÏµÍ³ÊÇ²»ÊÇÒÑÖØ×°¡¢±¸·ÝÊÇ²»ÊÇÍêÕû¡¢
+echo    ·ÖÇøÊÇ²»ÊÇÕæµÄ Dell ÄÇÈý¸ö¡£ÈÎºÎÒ»Ìõ²»Âú×ã¶¼»á¾Ü¾øÖ´ÐÐ¡£
+echo.
+echo    ½Å±¾Àï»¹ÓÐËÄµÀÈË¹¤È·ÈÏ£¨DELETE / É¾³ý»Ö¸´·ÖÇø / µ¹¼ÆÊ±£©¡£
+echo.
+set "DC="
+set /p DC=Èç¹ûÄãÒÑ¾­ÏëÇå³þ£¬ÊäÈë DANGER ¼ÌÐø£¨Ö±½Ó»Ø³µ·µ»Ø£©:
+if /i not "%DC%"=="DANGER" goto menu
+cls
+%PSRUN% "%KIT%\scripts\10-»ØÊÕ»Ö¸´·ÖÇø.ps1" -Apply
+goto done
 
-:m21
+:m11
 cls
 echo.
-echo   explorer å¥æŸ„å®ˆæŠ¤ï¼š
-echo    1  çœ‹çŠ¶æ€
-echo    2  ç«‹å³é‡å¯ explorer
-echo    0  è¿”å›ž
+echo   ÕâÊÇ"»Ø¹öµ½³ö³§ÏµÍ³"ÓÃµÄ£º»áÉú³ÉÒ»¸ö WinPE ÀïÔËÐÐµÄÅú´¦Àí¡£
+echo    1  ¼ì²é±¸·ÝÍêÕûÐÔ²¢Éú³É »¹Ô­³ö³§ÏµÍ³.cmd
+echo    2  Ë³±ã×ö SHA256 Éî¶ÈÐ£Ñé£¨16 ·ÖÖÓ£©
+echo    0  ·µ»Ø
 echo.
 set "S="
-set /p S=é€‰æ‹©:
+set /p S=Ñ¡Ôñ:
 if "%S%"=="1" (
-    %PSRUN% "%KIT%\scripts\21-explorerå®ˆæŠ¤.ps1" -Status
+    %PSRUN% "%KIT%\scripts\11-³ö³§¾µÏñ»¹Ô­.ps1"
     goto done
 )
 if "%S%"=="2" (
-    %PSRUN% "%KIT%\scripts\21-explorerå®ˆæŠ¤.ps1" -Restart
-    goto done
-)
-goto menu
-
-:m22
-cls
-echo.
-echo   å›žæ”¶å·²æäº¤å†…å­˜ï¼š
-echo    1  æ¼”ç»ƒï¼ˆåªæŠ¥å‘Šï¼Œä¸åŠ¨æ‰‹ï¼‰
-echo    2  æ‰§è¡Œï¼ˆå« MSBuild / Joplin åŽå°è¿›ç¨‹ï¼‰
-echo    0  è¿”å›ž
-echo.
-set "S="
-set /p S=é€‰æ‹©:
-if "%S%"=="1" (
-    %PSRUN% "%KIT%\scripts\22-å›žæ”¶å†…å­˜.ps1"
-    goto done
-)
-if "%S%"=="2" (
-    %PSRUN% "%KIT%\scripts\22-å›žæ”¶å†…å­˜.ps1" -Apply
+    %PSRUN% "%KIT%\scripts\11-³ö³§¾µÏñ»¹Ô­.ps1" -DeepVerify
     goto done
 )
 goto menu
 
 :m12
 cls
-%PSRUN% "%KIT%\scripts\13-æ‹·åˆ°WePEç›˜.ps1"
-goto done
+echo.
+echo   ÄÚ´æÊÝÉí£¨Win11 ×¨ÓÃ£¬¸¨Öú½Å±¾£©£º
+echo    1  ÄÚ´æÊÝÉí ¡¤ Ö»¿´±¨¸æ£¨30 Ãë²ÉÑù£©
+echo    2  ÄÚ´æÊÝÉí ¡¤ Ö´ÐÐ£¨¹Ø·þÎñ/Æô¶¯ÏîÇ°»áÎÊÄã£©
+echo    0  ·µ»Ø
+echo.
+set "S="
+set /p S=Ñ¡Ôñ:
+if "%S%"=="1" (
+    %PSRUN% "%KIT%\scripts\12-ÄÚ´æÊÝÉí.ps1"
+    goto done
+)
+if "%S%"=="2" (
+    %PSRUN% "%KIT%\scripts\12-ÄÚ´æÊÝÉí.ps1" -TrimServices -TrimStartup -Apply
+    goto done
+)
+goto menu
 
 :m13
 cls
-if not defined PY (
-    echo [é”™è¯¯] æ²¡æ‰¾åˆ° pythonï¼Œæ— æ³•è¿è¡Œ Joplin å¤‡ä»½è„šæœ¬
+echo.
+echo   explorer ¾ä±úÊØ»¤£º
+echo    1  ¿´×´Ì¬
+echo    2  Á¢¼´ÖØÆô explorer
+echo    0  ·µ»Ø
+echo.
+set "S="
+set /p S=Ñ¡Ôñ:
+if "%S%"=="1" (
+    %PSRUN% "%KIT%\scripts\13-explorerÊØ»¤.ps1" -Action Status
     goto done
 )
-echo   æ­£åœ¨ç»™ Joplin åšä¸€è‡´æ€§å¿«ç…§ï¼ˆJoplin å¯ä»¥å¼€ç€ï¼‰...
-echo.
-"%PY%" "%KIT%\scripts\15-å¤‡ä»½Joplin.py" --run
-goto done
+if "%S%"=="2" (
+    %PSRUN% "%KIT%\scripts\13-explorerÊØ»¤.ps1" -Action Restart
+    goto done
+)
+goto menu
 
 :m14
 cls
-if not defined PY (
-    echo [é”™è¯¯] æ²¡æ‰¾åˆ° pythonï¼Œæ— æ³•è¿è¡Œ Joplin å¤‡ä»½è„šæœ¬
+echo.
+echo   »ØÊÕÒÑÌá½»ÄÚ´æ£º
+echo    1  ÑÝÁ·£¨Ö»±¨¸æ£¬²»¶¯ÊÖ£©
+echo    2  Ö´ÐÐ£¨º¬ MSBuild / Joplin ºóÌ¨½ø³Ì£©
+echo    0  ·µ»Ø
+echo.
+set "S="
+set /p S=Ñ¡Ôñ:
+if "%S%"=="1" (
+    %PSRUN% "%KIT%\scripts\14-»ØÊÕÄÚ´æ.ps1"
     goto done
 )
-echo.
-echo   å®Œæ•´å¤‡ä»½ï¼šä¼šè¿ž 4.5 GB é™„ä»¶ä¸€èµ·æ‹·ï¼Œé¢„è®¡ 3~10 åˆ†é’Ÿã€‚
-echo.
-"%PY%" "%KIT%\scripts\15-å¤‡ä»½Joplin.py" --run --with-resources
-goto done
+if "%S%"=="2" (
+    %PSRUN% "%KIT%\scripts\14-»ØÊÕÄÚ´æ.ps1" -Apply
+    goto done
+)
+goto menu
 
 :m15
 cls
-echo   æ ¡éªŒ 37 æ¡é“¾æŽ¥æŒ‡å‘æ˜¯å¦æ­£ç¡®ï¼Œä»¥åŠ Joplin åº“/é™„ä»¶èƒ½å¦çœŸè¯»åˆ°ã€‚
-echo   è£…ä»»ä½•ç¨‹åºä¹‹å‰éƒ½åº”è¯¥å…ˆè·‘è¿™ä¸ªï¼›é“¾æŽ¥ä¸å¯¹å°±è£…ï¼Œæ•°æ®ä¼šå†™åˆ° C ç›˜ã€‚
 echo.
-echo     1   åªæ ¡éªŒï¼ˆé»˜è®¤ï¼‰
-echo     2   æ ¡éªŒ + å‘çŽ°å¼‚å¸¸æ—¶è‡ªåŠ¨é‡å»ºé“¾æŽ¥
+echo   Çå¿Õ»ØÊÕÕ¾£¨¿ÉÑ¡È«²¿ÅÌ»òÄ³¸öÅÌ£¬Ä¬ÈÏÈ«²¿£©£º
+echo    1  Ö´ÐÐ£¨½Å±¾ÄÚÑ¡ÅÌ£¬Ä¬ÈÏÈ«²¿£»»á¶þ´ÎÈ·ÈÏ£©
+echo    2  ÑÝÁ·£¨Ö»Í³¼Æ£¬²»É¾³ý£©
+echo    0  ·µ»Ø
 echo.
-set /p S=é€‰æ‹©ï¼ˆç›´æŽ¥å›žè½¦=1ï¼‰: 
-if /i "%S%"=="2" goto m15fix
-%PSRUN% "%KIT%\scripts\16-æ ¡éªŒé“¾æŽ¥.ps1"
-goto done
+set "S="
+set /p S=Ñ¡Ôñ:
+if "%S%"=="1" (
+    %PSRUN% "%KIT%\scripts\15-Çå¿Õ»ØÊÕÕ¾.ps1"
+    goto done
+)
+if "%S%"=="2" (
+    %PSRUN% "%KIT%\scripts\15-Çå¿Õ»ØÊÕÕ¾.ps1" -WhatIf
+    goto done
+)
+goto menu
 
-:m15fix
-%PSRUN% "%KIT%\scripts\16-æ ¡éªŒé“¾æŽ¥.ps1" -Fix
-goto done
+:m16
+cls
+echo.
+echo   É¨Ãè / ¼ÇÂ¼Á´½Ó£¨Î¬»¤ links.csv£©£º
+echo    1  É¨Ãè²¢Ð£Ñé£¨Ö»¶Á£¬ÁÐ³öÎ´¼ÇÂ¼µÄÇ¨ÒÆÁ´½Ó£©
+echo    2  É¨ÃèºóÑ¡ÔñÒª¼ÇÂ¼µÄÁ´½Ó£¨×·¼Ó½ø links.csv£©
+echo    0  ·µ»Ø
+echo.
+set "S="
+set /p S=Ñ¡Ôñ:
+if "%S%"=="1" (
+    %PSRUN% "%KIT%\scripts\16-É¨ÃèÁ´½Ó.ps1"
+    goto done
+)
+if "%S%"=="2" (
+    %PSRUN% "%KIT%\scripts\16-É¨ÃèÁ´½Ó.ps1" -Record
+    goto done
+)
+goto menu
 
 :m0
 cls
-%PSRUN% "%KIT%\scripts\99-è‡ªæ£€.ps1"
+%PSRUN% "%KIT%\scripts\99-×Ô¼ì.ps1"
 goto done
 
 :mh
-start "" "%KIT%\00-é‡è£…æ€»æ‰‹å†Œ.md"
+start "" "%KIT%\00-ÖØ×°×ÜÊÖ²á.md"
 goto menu
 
 :done
 echo.
 echo ----------------------------------------------------------------
-echo   æœ¬æ­¥éª¤ç»“æŸã€‚æŒ‰ä»»æ„é”®å›žä¸»èœå•ã€‚
+echo   ±¾²½Öè½áÊø¡£°´ÈÎÒâ¼ü»ØÖ÷²Ëµ¥¡£
 echo ----------------------------------------------------------------
 pause >nul
 goto menu

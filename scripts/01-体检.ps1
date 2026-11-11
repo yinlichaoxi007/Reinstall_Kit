@@ -7,8 +7,8 @@
 
     用法：
         开始.cmd  →  1
-        或： powershell -ExecutionPolicy Bypass -File 0-体检.ps1
-            powershell -ExecutionPolicy Bypass -File 0-体检.ps1 -Deep
+        或： powershell -ExecutionPolicy Bypass -File 01-体检.ps1
+            powershell -ExecutionPolicy Bypass -File 01-体检.ps1 -Deep
 
     退出码：0 = 没有 FAIL；1 = 有 FAIL（此时不要继续下一步）
 #>
@@ -375,9 +375,9 @@ if ($fail.Count -gt 0) {
     Write-Host ""
     Write-Ok "没有阻塞项。可以按菜单顺序往下走。"
     if ($build -ge 22000) {
-        Write-Info "下一步：菜单 2（备份）→ 4（做 U 盘）→ 5（重启装机）"
+        Write-Info "下一步：菜单 2（备份）→ 4（做 U 盘）→ 6（重启装机）"
     } else {
-        Write-Info "下一步：菜单 6（重建链接+装软件）→ 7（收尾）"
+        Write-Info "下一步：菜单 7（重建链接+装软件）→ 9（收尾）"
     }
 }
 
