@@ -11,7 +11,6 @@
 $ErrorActionPreference = 'Stop'
 
 $script:KitRoot = Split-Path -Parent $PSScriptRoot
-if (-not $script:KitRoot) { $script:KitRoot = 'D:\Reinstall_Kit' }
 $script:LogFile = $null
 
 $script:DellRecoveryGpt    = 'de94bba4-06d1-4d40-a16a-bfd50179d6ac'

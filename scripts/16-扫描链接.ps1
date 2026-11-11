@@ -198,8 +198,7 @@ foreach ($pat in @($scanCfg.ignoreRelPatterns)) {
 
 $csvCandidates = @(
     (Join-Path $kitRoot 'links.csv'),
-    (Join-Path $scriptDir 'links.csv'),
-    'D:\Reinstall_Kit\links.csv'
+    (Join-Path $scriptDir 'links.csv')
 )
 $csvPath = $null
 foreach ($c in $csvCandidates) { if (Test-Path -LiteralPath $c) { $csvPath = $c; break } }

@@ -28,7 +28,6 @@ $ErrorActionPreference = 'Continue'
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $KitDir = Split-Path -Parent $scriptDir
-if (-not (Test-Path -LiteralPath (Join-Path $KitDir 'links.csv'))) { $KitDir = 'D:\Reinstall_Kit' }
 
 # 迁移根：命令行参数优先，其次 kit.config.json；两处都没有就没法恢复
 if (-not $MigrationRoot) {

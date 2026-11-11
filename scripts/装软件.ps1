@@ -26,7 +26,6 @@ $ErrorActionPreference = 'Continue'
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $KitDir    = Split-Path -Parent $scriptDir
-if (-not (Test-Path (Join-Path $KitDir 'links.csv'))) { $KitDir = 'D:\Reinstall_Kit' }
 
 # 安装根与迁移根都来自 kit.config.json；没配时安装根退回「工程包所在盘\Programs」
 $kitCfg = $null

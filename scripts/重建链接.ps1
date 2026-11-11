@@ -31,8 +31,7 @@ if (-not (Assert-MigrationRoot)) { exit 2 }
 
 $csvCandidates = @(
     (Join-Path (Split-Path -Parent $scriptDir) 'links.csv'),
-    (Join-Path $scriptDir 'links.csv'),
-    'D:\Reinstall_Kit\links.csv'
+    (Join-Path $scriptDir 'links.csv')
 )
 $csvPath = $null
 foreach ($c in $csvCandidates) { if (Test-Path -LiteralPath $c) { $csvPath = $c; break } }

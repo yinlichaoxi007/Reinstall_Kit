@@ -36,8 +36,7 @@ $kitRoot   = Split-Path -Parent $scriptDir
 
 $csvCandidates = @(
     (Join-Path $kitRoot 'links.csv'),
-    (Join-Path $scriptDir 'links.csv'),
-    'D:\Reinstall_Kit\links.csv'
+    (Join-Path $scriptDir 'links.csv')
 )
 $csvPath = $null
 foreach ($c in $csvCandidates) { if (Test-Path -LiteralPath $c) { $csvPath = $c; break } }
