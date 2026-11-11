@@ -16,7 +16,7 @@
        然后选中新出现的「未分配空间」，点下一步。
 
   其余行为与手动分区版一致：跳过 OOBE、建本地管理员 __USER__、自动登录一次
-  执行 FirstLogonCommands（去 D~H 盘找 Reinstall_Kit\bootstrap.cmd）。
+  执行 FirstLogonCommands（去 D~H 盘找工程包目录的 bootstrap.cmd）。
 
   ⚠️ 上机前必须核对镜像名：
      dism /Get-WimInfo /WimFile:X:\sources\install.wim
@@ -171,7 +171,7 @@
         <SynchronousCommand wcm:action="add">
           <Order>1</Order>
           <Description>Reinstall Kit Bootstrap</Description>
-          <CommandLine>cmd.exe /c for %d in (D E F G H) do @if exist "%d:\Reinstall_Kit\bootstrap.cmd" (call "%d:\Reinstall_Kit\bootstrap.cmd" &amp; exit /b 0)</CommandLine>
+          <CommandLine>cmd.exe /c for %d in (D E F G H) do @if exist "%d:\__KITNAME__\bootstrap.cmd" (call "%d:\__KITNAME__\bootstrap.cmd" &amp; exit /b 0)</CommandLine>
           <RequiresUserInput>false</RequiresUserInput>
         </SynchronousCommand>
       </FirstLogonCommands>

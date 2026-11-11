@@ -6,19 +6,19 @@ color 0E
 
 echo.
 echo ============================================================
-echo   从 D 盘备份还原出厂 Windows 10（家庭中文版 20H2）
+echo   从工程包里的出厂镜像还原 Windows 10（家庭中文版 20H2）
 echo   这个操作会格式化目标系统分区，C 盘上的东西会全部丢失
 echo ============================================================
 echo.
 
-rem ---------- 定位工程包（卷标 DATA，路径固定） ----------
+rem ---------- 定位工程包（在 D~Z 各盘根目录下找） ----------
 set "KIT="
 for %%D in (D E F G H I J K L M N O P Q R S T U V W Y Z) do (
     if not defined KIT if exist "%%D:\Reinstall_Kit\DellFactoryImage\P5_Image\Image\install.swm" set "KIT=%%D:\Reinstall_Kit"
 )
 if not defined KIT (
-    echo [错误] 没找到 D:\Reinstall_Kit\DellFactoryImage
-    echo        先确认数据盘已接上，且在磁盘管理里盘符是 D
+    echo [错误] 没在 D~Z 各盘根目录下找到 Reinstall_Kit\DellFactoryImage
+    echo        先确认数据盘已接上、盘符正常
     pause
     exit /b 1
 )
@@ -31,8 +31,8 @@ echo ------------------------------------------------------------
 (echo list disk) > "%TEMP%\dp_list.txt"
 diskpart /s "%TEMP%\dp_list.txt"
 echo ------------------------------------------------------------
-echo   系统盘通常是容量较小的那块 SSD / NVMe
-echo   不要选数据盘（通常是容量最大的那块）
+echo   系统盘通常是容量较小那块 SSD / NVMe
+echo   不要选容量最大那块（通常是数据盘）
 echo.
 set /p DISK=请输入系统盘磁盘号（只输数字）:
 echo.

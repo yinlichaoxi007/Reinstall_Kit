@@ -42,11 +42,8 @@ $csvCandidates = @(
 $csvPath = $null
 foreach ($c in $csvCandidates) { if (Test-Path -LiteralPath $c) { $csvPath = $c; break } }
 
-# 迁移根目录：与 重建链接.ps1 同一口径，优先读本机私有配置，缺省按当前用户名推断
-$MigrationRoot = $null
-$configFile = Join-Path $kitRoot 'local.config.ps1'
-if (Test-Path -LiteralPath $configFile) { . $configFile }
-if (-not $MigrationRoot) { $MigrationRoot = Join-Path 'D:\migration\C\Users' $env:USERNAME }
+# 迁移根目录来自 kit.config.json（local.config.ps1 已停用）
+. (Join-Path $PSScriptRoot '_common.ps1')
 
 function Expand-Target {
     <# 把 %MIGROOT% 与 %USERPROFILE% 等占位展开成本机实际路径 #>
@@ -329,6 +326,8 @@ if ($SelfTest) {
     Say "【自检模式】把第一条的期望指向改成不存在的路径，应当被判定为 FAIL" 'Magenta'
     $rows[0].target = 'X:\__selftest_must_fail__'
 }
+
+if (-not $SelfTest -and -not (Assert-MigrationRoot)) { exit 2 }
 
 $summary = Invoke-AllChecks $rows
 

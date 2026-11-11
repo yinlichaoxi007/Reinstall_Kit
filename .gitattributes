@@ -1,0 +1,2 @@
+# 批处理保持 CRLF 检出：cmd.exe 对 LF-only 的 goto/label 解析不可靠
+*.cmd text eol=crlf

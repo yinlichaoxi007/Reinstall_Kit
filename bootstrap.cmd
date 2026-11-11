@@ -24,41 +24,32 @@ if errorlevel 1 (
 echo [1/6] 权限检查通过
 echo.
 
-rem ---------- 1. 数据盘检查 ----------
-echo [2/6] 检查数据盘...
-set "DATAROOT="
-if exist "D:\migration" set "DATAROOT=D:"
-if not defined DATAROOT if exist "E:\migration" set "DATAROOT=E:"
-if not defined DATAROOT if exist "F:\migration" set "DATAROOT=F:"
+rem ---------- 1. 数据目录检查 ----------
+echo [2/6] 检查数据目录...
+set "MIGROOT="
+set "MIGTMP=%TEMP%\kit_migroot.txt"
+if exist "%KIT%\kit.config.json" (
+    powershell -NoProfile -ExecutionPolicy Bypass -Command "$c=ConvertFrom-Json (Get-Content -LiteralPath '%KIT%\kit.config.json' -Raw -Encoding UTF8); [IO.File]::WriteAllText('%MIGTMP%', [string]$c.migrationRoot)" >nul 2>&1
+    if exist "%MIGTMP%" set /p MIGROOT=<"%MIGTMP%"
+)
+if exist "%MIGTMP%" del "%MIGTMP%" >nul 2>&1
+if defined MIGROOT if not exist "%MIGROOT%\" set "MIGROOT="
 
-if not defined DATAROOT (
+if not defined MIGROOT (
     echo.
-    echo   [严重] 找不到数据盘！在 D/E/F 盘都没有找到 migration 目录。
-    echo   可能原因：D 盘的 SATA 线还没插回，或者盘符变成了别的字母。
-    echo.
-    echo   请先处理：
-    echo     1. 关机，插回 数据盘的数据线
-    echo     2. 开机后打开「磁盘管理」，把数据盘的盘符改成 D
-    echo     3. 然后重新运行本脚本
+    echo   [严重] 没有可用的数据目录。
+    echo   请检查：
+    echo     1. 数据盘是否已接回、盘符是否与 kit.config.json 的 migrationRoot 一致
+    echo     2. 工程包里的 kit.config.json 是否填了 migrationRoot
+    echo   改好后重新运行本脚本。
     echo.
     pause
     exit /b 2
 )
-
-if /i not "%DATAROOT%"=="D:" (
-    echo.
-    echo   [警告] 数据盘当前是 %DATAROOT% ，但链接清单里的路径写的是 D:\migration
-    echo   请到「磁盘管理」里把这块盘的盘符改回 D，否则所有链接都会指错。
-    echo   改完再重新运行本脚本。
-    echo.
-    pause
-    exit /b 3
-)
-echo   数据盘 OK: D:\migration
+echo   数据目录 OK: %MIGROOT%
 echo.
-
 rem ---------- 2. 重建链接 ----------
-echo [3/6] 重建 D 盘数据链接（links.csv 里的 junction）...
+echo [3/6] 重建数据链接（links.csv 里的 junction）...
 echo ------------------------------------------------------------
 powershell -NoProfile -ExecutionPolicy Bypass -File "%KIT%\scripts\重建链接.ps1"
 set "RC_LINK=%ERRORLEVEL%"
@@ -115,7 +106,7 @@ echo        在本目录打开 PowerShell，执行
 echo        powershell -ExecutionPolicy Bypass -File scripts\装软件.ps1 -Manifest packages-all.json
 echo.
 echo   3) 装完 Dell 驱动后重启一次。
-echo   4) 个人数据从 D:\Reinstall_Kit\backup\ 里按 恢复清单.md 拷回。
+echo   4) 个人数据从备份目录拷回（默认 %KIT%\backup，见 kit.config.json 的 backupRoot）。
 echo.
 
 if exist "%KIT%\logs" (

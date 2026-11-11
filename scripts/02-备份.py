@@ -12,7 +12,8 @@
     python 02-备份.py --list           # 只列出分类
     python 02-备份.py --only keys,joplin --run
 
-输出：<destRoot>/<时间戳>/
+输出：<backupRoot>/<时间戳>/
+      backupRoot 由工程包根目录的 kit.config.json 决定，留空时用 <工程包>/backup
 """
 import os
 import sys
@@ -30,6 +31,7 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 KIT_ROOT = os.path.dirname(SCRIPT_DIR)
 CONFIG_FILE = os.path.join(KIT_ROOT, "backup.config.json")
 LOCAL_CONFIG_FILE = os.path.join(KIT_ROOT, "backup.local.json")
+KIT_CONFIG_FILE = os.path.join(KIT_ROOT, "kit.config.json")
 HOME = os.path.expanduser("~")
 DEFAULT_DEST_ROOT = os.path.join(KIT_ROOT, "backup")
 SKIP_LARGE_BYTES = 200 * 1024 * 1024
@@ -87,11 +89,28 @@ class Spin:
         sys.stdout.flush()
 
 
+def load_kit_config():
+    """读取工程包根目录的 kit.config.json
+
+    返回值: dict；文件不存在或格式错误时返回空 dict
+    备注: 只关心 backupRoot，其他字段归 PowerShell 脚本用
+    """
+    if not os.path.isfile(KIT_CONFIG_FILE):
+        return {}
+    try:
+        with open(KIT_CONFIG_FILE, encoding="utf-8-sig") as fh:
+            return json.load(fh) or {}
+    except (OSError, ValueError) as e:
+        print("  [警告] kit.config.json 读取失败，按默认值继续：%s（%s）" % (KIT_CONFIG_FILE, e))
+        return {}
+
+
 def load_config():
     """读取备份配置：backup.local.json 存在时整体覆盖 backup.config.json
 
-    返回值: dict，至少包含 categories（分类列表）与 destRoot（输出根目录）。
-    备注: 配置文件不存在或格式错误时直接终止，避免半套清单静默执行。
+    返回值: dict，包含 categories（分类列表）与 destRoot（输出根目录）。
+    备注: 配置文件不存在或格式错误时直接终止，避免半套清单静默执行；
+          落点由 kit.config.json 的 backupRoot 决定，不看 backup.config.json。
     """
     path = LOCAL_CONFIG_FILE if os.path.isfile(LOCAL_CONFIG_FILE) else CONFIG_FILE
     if not os.path.isfile(path):
@@ -110,6 +129,7 @@ def load_config():
     if path == LOCAL_CONFIG_FILE:
         print("  [配置] 使用本机覆盖配置：%s" % path)
     cfg["_path"] = path
+    cfg["destRoot"] = (load_kit_config().get("backupRoot") or "").strip() or DEFAULT_DEST_ROOT
     return cfg
 
 
@@ -303,7 +323,7 @@ def preflight():
         for line in out.strip().splitlines():
             print("      " + line.strip())
         print("  ⚠️  WSL 必须单独导出，文件拷贝救不回来：")
-        print("      wsl --export <发行版名> D:\\Reinstall_Kit\\backup\\wsl.tar")
+        print("      wsl --export <发行版名> <备份目录>\\wsl.tar")
     else:
         print("  WSL            : 无法查询（可能未安装或被安全策略拦截）")
 

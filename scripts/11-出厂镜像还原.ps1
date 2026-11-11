@@ -1,6 +1,6 @@
 ﻿#requires -Version 5.1
 <#
-    从 D 盘备份还原出厂 Windows（回滚用）
+    从工程包里的出厂镜像还原出厂 Windows（回滚用）
     ============================================================
     为什么不在这个脚本里直接还原：
         还原要格式化 C: 并把映像写进去，这件事只能在 WinPE 里做
@@ -8,12 +8,12 @@
         通常没有 PowerShell。
 
     所以这里做两件事：
-        1. 把 D:\Reinstall_Kit\DellFactoryImage 的完整性再核一遍
-        2. 在 D:\Reinstall_Kit\ 下生成一个「还原出厂系统.cmd」
+        1. 把 <工程包>\DellFactoryImage 的完整性再核一遍
+        2. 在 <工程包>\ 下生成一个「还原出厂系统.cmd」
            —— 你在 WinPE 的命令行里输入它的路径回车就行，不用背命令
 
     用法：
-        开始.cmd  →  9
+        开始.cmd  →  11
         或： powershell -ExecutionPolicy Bypass -File 11-出厂镜像还原.ps1
 #>
 [CmdletBinding()]
@@ -99,19 +99,19 @@ color 0E
 
 echo.
 echo ============================================================
-echo   从 D 盘备份还原出厂 Windows 10（家庭中文版 20H2）
+echo   从工程包里的出厂镜像还原 Windows 10（家庭中文版 20H2）
 echo   这个操作会格式化目标系统分区，C 盘上的东西会全部丢失
 echo ============================================================
 echo.
 
-rem ---------- 定位工程包（卷标 DATA，路径固定） ----------
+rem ---------- 定位工程包（在 D~Z 各盘根目录下找） ----------
 set "KIT="
 for %%D in (D E F G H I J K L M N O P Q R S T U V W Y Z) do (
-    if not defined KIT if exist "%%D:\Reinstall_Kit\DellFactoryImage\P5_Image\Image\install.swm" set "KIT=%%D:\Reinstall_Kit"
+    if not defined KIT if exist "%%D:\__KITNAME__\DellFactoryImage\P5_Image\Image\install.swm" set "KIT=%%D:\__KITNAME__"
 )
 if not defined KIT (
-    echo [错误] 没找到 D:\Reinstall_Kit\DellFactoryImage
-    echo        先确认数据盘已接上，且在磁盘管理里盘符是 D
+    echo [错误] 没在 D~Z 各盘根目录下找到 __KITNAME__\DellFactoryImage
+    echo        先确认数据盘已接上、盘符正常
     pause
     exit /b 1
 )
@@ -124,8 +124,8 @@ echo ------------------------------------------------------------
 (echo list disk) > "%TEMP%\dp_list.txt"
 diskpart /s "%TEMP%\dp_list.txt"
 echo ------------------------------------------------------------
-echo   系统盘通常是容量较小的那块 SSD / NVMe
-echo   不要选数据盘（通常是容量最大的那块）
+echo   系统盘通常是容量较小那块 SSD / NVMe
+echo   不要选容量最大那块（通常是数据盘）
 echo.
 set /p DISK=请输入系统盘磁盘号（只输数字）:
 echo.
@@ -201,6 +201,7 @@ exit /b 0
 '@
 
 $batPath = Join-Path $script:KitRoot '还原出厂系统.cmd'
+$bat = $bat.Replace('__KITNAME__', (Split-Path -Leaf $script:KitRoot))
 $batGbk = $bat -replace "`r?`n", "`r`n"
 [System.IO.File]::WriteAllText($batPath, $batGbk, [System.Text.Encoding]::GetEncoding(936))
 Write-Ok ("已生成: " + $batPath)
@@ -209,12 +210,12 @@ Write-Ok ("已生成: " + $batPath)
 Write-Step "4. 怎么用"
 
 Write-Host ""
-Write-Host "  前提：D 盘这份备份在（16.68 GB），且 D 盘是 NTFS 可读" -ForegroundColor Gray
+Write-Host "  前提：工程包里的 DellFactoryImage 备份在，且工程包所在盘在 PE 里可读" -ForegroundColor Gray
 Write-Host ""
 Write-Host "  步骤：" -ForegroundColor Cyan
 Write-Host "    1) 用任何 WinPE U 盘启动（微PE / 安装盘 / Ventoy 里的 PE 都行）"
 Write-Host "    2) 进 PE 后打开命令行（微PE 桌面有「命令提示符」）"
-Write-Host "    3) 输入： D:\Reinstall_Kit\还原出厂系统.cmd"
+Write-Host ("    3) 输入： " + $batPath)
 Write-Host "    4) 按屏幕提示输磁盘号、分区号、盘符，两次确认后开始"
 Write-Host ""
 Write-Host "  注意：" -ForegroundColor Yellow

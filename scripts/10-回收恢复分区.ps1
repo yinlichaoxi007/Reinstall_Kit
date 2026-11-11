@@ -344,7 +344,7 @@ Write-Host ""
 Write-Ok "空间已回收。建议重启一次确认系统正常。"
 Write-Host ""
 Write-Host "  如果之后想彻底不要这份出厂镜像备份，可删：" -ForegroundColor Gray
-Write-Host "     D:\Reinstall_Kit\DellFactoryImage\  （16.68 GB）" -ForegroundColor Gray
+Write-Host ("     " + (Join-Path $script:KitRoot 'DellFactoryImage') + "  （出厂镜像备份）") -ForegroundColor Gray
 Write-Host "  但删了就再也没有回出厂的本地后路了。" -ForegroundColor Yellow
 Write-Host ""
 Write-Host ("日志: " + $script:LogFile) -ForegroundColor DarkGray

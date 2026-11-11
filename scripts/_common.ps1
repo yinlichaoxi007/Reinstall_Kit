@@ -14,13 +14,6 @@ $script:KitRoot = Split-Path -Parent $PSScriptRoot
 if (-not $script:KitRoot) { $script:KitRoot = 'D:\Reinstall_Kit' }
 $script:LogFile = $null
 
-# 本机私有配置：用户名、机器名、迁移根目录。文件不入库，缺失时按环境变量推断
-$script:LocalConfigFile = Join-Path $script:KitRoot 'local.config.ps1'
-if (Test-Path -LiteralPath $script:LocalConfigFile) { . $script:LocalConfigFile }
-if (-not $LocalUserName)     { $LocalUserName = $env:USERNAME }
-if (-not $LocalComputerName) { $LocalComputerName = $env:COMPUTERNAME }
-if (-not $MigrationRoot)     { $MigrationRoot = "D:\migration\C\Users\$env:USERNAME" }
-
 $script:DellRecoveryGpt    = 'de94bba4-06d1-4d40-a16a-bfd50179d6ac'
 $script:DellRecoveryLabels = @('WINRETOOLS', 'Image', 'DELLSUPPORT')
 
@@ -424,3 +417,123 @@ function Test-XmlFile {
         return $true
     } catch { return $false }
 }
+
+# ------------------------------------------------------------------ 本机配置
+function Get-KitConfig {
+    <#
+        读取工程包根目录的 kit.config.json；文件不存在时按空模板生成。
+        参数:
+            Root: 工程包根目录，默认 $script:KitRoot
+        返回值:
+            PSCustomObject，含 userName/computerName/dataRoot/migrationRoot/
+            backupRoot/installRoot/isoPath/wepeDrive 八个字段，空串表示自动推断
+        备注:
+            解析失败只告警并按空配置继续，避免一个坏 JSON 让所有脚本都跑不起来。
+    #>
+    param([string]$Root = $script:KitRoot)
+
+    $path = Join-Path $Root 'kit.config.json'
+    $keys = @('userName', 'computerName', 'dataRoot', 'migrationRoot',
+              'backupRoot', 'installRoot', 'isoPath', 'wepeDrive')
+    $cfg = [ordered]@{}
+    foreach ($k in $keys) { $cfg[$k] = '' }
+
+    if (Test-Path -LiteralPath $path) {
+        try {
+            $json = Get-Content -LiteralPath $path -Raw -Encoding UTF8 | ConvertFrom-Json
+            foreach ($k in $keys) {
+                $v = $json.PSObject.Properties[$k]
+                if ($v -and $v.Value) { $cfg[$k] = [string]$v.Value }
+            }
+        }
+        catch {
+            Write-Warn ("kit.config.json 解析失败，按默认值继续：" + $_.Exception.Message)
+        }
+    }
+    else {
+        try {
+            $text = ([ordered]@{
+                _说明         = '本机配置。字段留空表示自动推断；路径用绝对路径（反斜杠写成双反斜杠）。'
+                userName      = ''
+                computerName  = ''
+                dataRoot      = ''
+                migrationRoot = ''
+                backupRoot    = ''
+                installRoot   = ''
+                isoPath       = ''
+                wepeDrive     = ''
+            } | ConvertTo-Json)
+            [IO.File]::WriteAllText($path, ($text + "`r`n"), (New-Object Text.UTF8Encoding($true)))
+            Write-Info ("已生成本机配置模板: " + $path)
+            Write-Info "按需要填写 migrationRoot 等字段，重跑本脚本即可生效。"
+        }
+        catch {
+            Write-Warn ("无法生成 kit.config.json：" + $_.Exception.Message)
+        }
+    }
+    return [pscustomobject]$cfg
+}
+
+function Assert-MigrationRoot {
+    <#  链接类脚本的前置闸门：迁移根必须已配置；未配置时打印填写指引并返回 $false  #>
+    if ($script:MigrationRoot) { return $true }
+    Write-Err "没有配置迁移根目录：kit.config.json 的 migrationRoot 为空。"
+    Write-Info "链接相关脚本要靠它把 %MIGROOT% 展开成真实路径。"
+    Write-Info ("文件: " + (Join-Path $script:KitRoot 'kit.config.json'))
+    Write-Info '示例: "migrationRoot": "D:\\migration\\C\\Users\\<用户名>"'
+    return $false
+}
+
+function Find-KitIso {
+    <#
+        在工程包目录与数据盘浅层（最深 2 层）找 Windows 安装 ISO。
+        返回值: 唯一候选的完整路径；没候选或有歧义时返回空串并打印候选清单
+        备注: 只认文件名像 Windows 安装盘的 ISO，避免把 Linux / Matlab 之类
+              误写进 U 盘；宁可不猜，也不猜错。
+    #>
+    $all = @()
+    foreach ($r in @($script:KitRoot, $DataRoot) | Where-Object { $_ } | Select-Object -Unique) {
+        if (-not (Test-Path -LiteralPath $r)) { continue }
+        $all += @(Get-ChildItem -LiteralPath $r -Filter '*.iso' -File -Recurse -Depth 2 -ErrorAction SilentlyContinue)
+    }
+    if ($all.Count -eq 0) { return '' }
+
+    $win = @($all | Where-Object { $_.Name -match '(?i)(windows|win10|win11|zh-cn)' })
+    if ($win.Count -eq 1) { return $win[0].FullName }
+    if ($win.Count -gt 1) {
+        $ltsc = @($win | Where-Object { $_.Name -match '(?i)(ltsc|iot)' })
+        if ($ltsc.Count -eq 1) {
+            Write-Info ("自动选中 LTSC 版: " + $ltsc[0].Name)
+            return $ltsc[0].FullName
+        }
+        Write-Warn ("找到 {0} 支像 Windows 安装盘的 ISO，无法确定用哪支：" -f $win.Count)
+        foreach ($f in $win) { Write-Info ("    " + $f.FullName) }
+        Write-Info '请用 -Iso 指定，或把要用的那支填进 kit.config.json 的 isoPath'
+        return ''
+    }
+    if ($all.Count -eq 1) { return $all[0].FullName }
+    Write-Warn ("找到 {0} 支 ISO，但没有一支像 Windows 安装盘：" -f $all.Count)
+    foreach ($f in $all) { Write-Info ("    " + $f.FullName) }
+    Write-Info '请用 -Iso 指定，或把要用的那支填进 kit.config.json 的 isoPath'
+    return ''
+}
+
+# 配置在文件末尾加载：Get-KitConfig 依赖上面的 Write-*；dot-source 后各脚本可直接用这些变量
+$script:KitCfg = Get-KitConfig
+if (-not $script:KitCfg.userName) { $script:KitCfg.userName = $env:USERNAME }
+if (-not $script:KitCfg.computerName) { $script:KitCfg.computerName = $env:COMPUTERNAME }
+if (-not $script:KitCfg.dataRoot) {
+    $kitQualifier = Split-Path -Qualifier $script:KitRoot
+    if ($kitQualifier) { $script:KitCfg.dataRoot = $kitQualifier + '\' }
+}
+if (-not $script:KitCfg.backupRoot)  { $script:KitCfg.backupRoot = Join-Path $script:KitRoot 'backup' }
+if (-not $script:KitCfg.installRoot) { $script:KitCfg.installRoot = Join-Path $script:KitCfg.dataRoot 'Programs' }
+
+$LocalUserName     = $script:KitCfg.userName
+$LocalComputerName = $script:KitCfg.computerName
+$DataRoot          = $script:KitCfg.dataRoot
+$MigrationRoot     = $script:KitCfg.migrationRoot
+$BackupRoot        = $script:KitCfg.backupRoot
+$InstallRoot       = $script:KitCfg.installRoot
+$IsoPath           = $script:KitCfg.isoPath
+$WepeDrive         = $script:KitCfg.wepeDrive

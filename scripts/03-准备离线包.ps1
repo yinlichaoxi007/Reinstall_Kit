@@ -5,7 +5,7 @@
     Windows 10 IoT LTSC 2021 不带 App Installer，也就没有 winget。
     重装后第一次跑「装软件.ps1」时，脚本会从这个目录离线安装。
 
-    下载三个文件到 D:\Reinstall_Kit\pkgs\appinstaller\：
+    下载三个文件到 <工程包>\pkgs\appinstaller\：
         Microsoft.VCLibs.x64.14.00.Desktop.appx        依赖
         Microsoft.UI.Xaml.2.8.x64.appx                 依赖
         Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle   本体

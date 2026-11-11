@@ -18,3 +18,10 @@ scripts/__pycache__/
 local.config.ps1
 backup.local.json
 pre-reinstall-identifiers.txt
+kit.config.json
+
+# 本机私有文档（不外发）
+docs/private/
+
+# 脚本生成的产物
+autounattend.generated.xml

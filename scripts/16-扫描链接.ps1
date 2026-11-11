@@ -182,6 +182,7 @@ catch {
     exit 2
 }
 if ($scanCfg.migrationRoot) { $MigrationRoot = [string]$scanCfg.migrationRoot }
+if (-not (Assert-MigrationRoot)) { exit 2 }
 $maxDepth = 4
 if ($scanCfg.maxDepth) { $maxDepth = [int]$scanCfg.maxDepth }
 $roots = @($scanCfg.roots | Where-Object { $_ })

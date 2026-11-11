@@ -14,11 +14,14 @@
 #>
 [CmdletBinding()]
 param(
-    [string]$Iso = 'D:\软件包\系统\Win10_IoT_Enterprise_LTSC_2021_64-Bit_2608.iso',
+    [string]$Iso = '',
     [switch]$Deep      # 对出厂镜像做逐文件 SHA256（约 16 分钟）
 )
 
 . (Join-Path $PSScriptRoot '_common.ps1')
+
+if (-not $Iso) { $Iso = $IsoPath }
+if (-not $Iso) { $Iso = Find-KitIso }
 
 Start-KitLog -Name 'preflight' | Out-Null
 Write-Head "重装工程包体检"
@@ -78,32 +81,32 @@ if ($c) {
     Add-Check 'OK' 'C 盘' ("总 {0} / 可用 {1}" -f (Format-Human $c.Size), (Format-Human $c.SizeRemaining))
 }
 
-$d = Get-Volume -DriveLetter D -ErrorAction SilentlyContinue
+$dataRoot = $DataRoot
+if (-not $dataRoot) { $dataRoot = 'D:\' }
+$dataLetter = $dataRoot.TrimEnd('\').TrimEnd(':')
+$d = Get-Volume -DriveLetter $dataLetter -ErrorAction SilentlyContinue
 if ($d) {
     if ($d.SizeRemaining -gt 30GB) {
-        Add-Check 'OK' 'D 盘' ("总 {0} / 可用 {1}" -f (Format-Human $d.Size), (Format-Human $d.SizeRemaining))
+        Add-Check 'OK' '数据盘' ("{0}: 总 {1} / 可用 {2}" -f $dataLetter, (Format-Human $d.Size), (Format-Human $d.SizeRemaining))
     } else {
-        Add-Check 'WARN' 'D 盘' ("可用只剩 " + (Format-Human $d.SizeRemaining) + "，备份可能不够")
-    }
-    if ($d.FileSystemLabel -ne 'DATA') {
-        Add-Check 'WARN' 'D 盘卷标' ("卷标是 '{0}'，不是 DATA（bootstrap 靠卷标找盘）" -f $d.FileSystemLabel)
-    } else {
-        Add-Check 'OK' 'D 盘卷标' 'DATA'
+        Add-Check 'WARN' '数据盘' ("{0}: 可用只剩 {1}，备份可能不够" -f $dataLetter, (Format-Human $d.SizeRemaining))
     }
 } else {
-    Add-Check 'FAIL' 'D 盘' '没有 D: 盘 —— 工程包必须在 D 盘上'
+    Add-Check 'FAIL' '数据盘' ("{0} 不存在 —— 工程包所在盘不在" -f $dataRoot)
 }
 
-if (-not (Test-Path -LiteralPath 'D:\migration')) {
-    Add-Check 'WARN' 'D:\migration' '不存在 —— 当前可能已重装或 D 盘未接'
+if (-not $MigrationRoot) {
+    Add-Check 'WARN' '迁移根' 'kit.config.json 的 migrationRoot 为空，链接不会展开'
+} elseif (-not (Test-Path -LiteralPath $MigrationRoot)) {
+    Add-Check 'WARN' '迁移根' ("{0} 不存在 —— 当前可能已重装或数据盘未接" -f $MigrationRoot)
 } else {
-    Add-Check 'OK' 'D:\migration' '存在'
+    Add-Check 'OK' '迁移根' $MigrationRoot
 }
 
 # ================================================================= 2 备份
 Write-Step "2. 阶段 0 备份"
 
-$backupRoot = Join-Path $script:KitRoot 'backup'
+$backupRoot = $BackupRoot
 $latest = $null
 if (Test-Path -LiteralPath $backupRoot) {
     $latest = Get-ChildItem -LiteralPath $backupRoot -Directory -ErrorAction SilentlyContinue |

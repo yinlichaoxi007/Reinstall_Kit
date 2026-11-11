@@ -20,7 +20,8 @@
 #>
 [CmdletBinding()]
 param(
-    [string]$Iso = 'D:\软件包\系统\Win10_IoT_Enterprise_LTSC_2021_64-Bit_2608.iso',
+    [Alias('IsoPath')]
+    [string]$Iso = '',
     [string]$AnswerFile = 'autounattend-保留恢复分区-社区重制版.xml',
     [string]$DriveLetter = '',
     [switch]$DryRun,
@@ -35,9 +36,13 @@ Write-Head "制作安装 U 盘"
 # ================================================================= 0 前置
 if (-not (Assert-Admin)) { Stop-KitLog; exit 2 }
 
-if (-not (Test-Path -LiteralPath $Iso)) {
-    Write-Err ("找不到 ISO: " + $Iso)
-    Write-Info "改路径：-Iso ""D:\...\xxx.iso"""
+if (-not $Iso) { $Iso = $IsoPath }
+if (-not $Iso) { $Iso = Find-KitIso }
+
+if (-not $Iso -or -not (Test-Path -LiteralPath $Iso)) {
+    Write-Err ("找不到 ISO: " + $(if ($Iso) { $Iso } else { '(未配置，也没在工程包/数据盘里找到)' }))
+    Write-Info '把 ISO 放到工程包目录或数据盘下，或改 kit.config.json 的 isoPath'
+    Write-Info '也可以直接指定：-Iso "D:\...\xxx.iso"'
     Stop-KitLog; exit 1
 }
 $isoItem = Get-Item -LiteralPath $Iso
@@ -153,9 +158,11 @@ function Find-VentoyExe {
         (Join-Path $script:KitRoot 'tools\ventoy\Ventoy2Disk.exe')
     )
     foreach ($c in $cands) { if (Test-Path -LiteralPath $c) { return $c } }
-    $found = Get-ChildItem -LiteralPath 'D:\软件包' -Recurse -Filter 'Ventoy2Disk.exe' -ErrorAction SilentlyContinue -Depth 3 |
-             Select-Object -First 1
-    if ($found) { return $found.FullName }
+    if ($DataRoot -and (Test-Path -LiteralPath $DataRoot)) {
+        $found = Get-ChildItem -LiteralPath $DataRoot -Recurse -Filter 'Ventoy2Disk.exe' -ErrorAction SilentlyContinue -Depth 3 |
+                 Select-Object -First 1
+        if ($found) { return $found.FullName }
+    }
     return $null
 }
 
@@ -194,7 +201,7 @@ function Install-VentoyPackage {
     catch {
         Write-Err ("自动下载 Ventoy 失败: " + $_.Exception.Message)
         Write-Info "手动办法：浏览器打开 https://www.ventoy.net/cn/download.html"
-        Write-Info "          下载 windows.zip，解压到 D:\Reinstall_Kit\tools\Ventoy\"
+        Write-Info ("          下载 windows.zip，解压到 " + (Join-Path $script:KitRoot 'tools\Ventoy'))
         return $null
     }
 }
@@ -323,13 +330,15 @@ if ($DryRun) {
 Write-Step "4. 放置应答文件"
 
 $ansDest = Join-Path $usbRoot 'autounattend.xml'
-# 模板里的 __USER__ / __COMPUTERNAME__ 按本机配置渲染，模板本身不含身份信息
+# 模板里的 __USER__ / __COMPUTERNAME__ / __KITNAME__ 按本机配置渲染，模板本身不含身份信息
 function Render-AnswerText {
     param([string]$Path)
     $text = Get-Content -LiteralPath $Path -Raw -Encoding UTF8
-    return $text.Replace('__USER__', $LocalUserName).Replace('__COMPUTERNAME__', $LocalComputerName)
+    $kitName = Split-Path -Leaf $script:KitRoot
+    return $text.Replace('__USER__', $LocalUserName).Replace('__COMPUTERNAME__', $LocalComputerName).Replace('__KITNAME__', $kitName)
 }
 $ansText = Render-AnswerText $ansPath
+$generatedPath = Join-Path $script:KitRoot 'autounattend.generated.xml'
 
 if ((Test-Path -LiteralPath $ansDest) -and -not $DryRun) {
     $oldText = Get-Content -LiteralPath $ansDest -Raw -Encoding UTF8
@@ -344,6 +353,8 @@ if ((Test-Path -LiteralPath $ansDest) -and -not $DryRun) {
 if ($DryRun) {
     Write-Info ("[演练] 会按本机配置渲染 {0} -> {1}" -f $ansPath, $ansDest)
 } else {
+    [IO.File]::WriteAllText($generatedPath, $ansText, (New-Object Text.UTF8Encoding($true)))
+    Write-Info ("渲染结果已留存: " + $generatedPath)
     [IO.File]::WriteAllText($ansDest, $ansText, (New-Object Text.UTF8Encoding($true)))
     if (-not (Test-Path -LiteralPath $ansDest)) {
         Write-Err "应答文件写入失败"
@@ -379,18 +390,19 @@ U 盘内容：
   3. 选 "UEFI: <你的U盘名>"，回车
 
 二、分区这一步（唯一需要手动的地方）
-  · 选中系统盘的原系统分区（NTFS）-> 点【格式化】-> 下一步
+  · 用「卷标 + 容量」确认哪块是系统盘（不要只看盘符，PE 里盘符可能错位）
+  · 选中系统盘的既有系统分区 -> 点【格式化】-> 下一步
   · 不要删除任何分区，不要点【新建】
-  · 不要碰数据盘
+  · 不要碰数据盘分区（通常是容量最大、卷标为数据盘的那块）
 
 三、装的过程中
-  · 全程不需要输入任何东西，会自动建账户（用户名取自 local.config.ps1，空密码）
+  · 全程不需要输入任何东西，会自动建账户（用户名取自 kit.config.json，空密码）
   · 大约 10~15 分钟，中间会自动重启
 
 四、装完第一次进桌面
   · 拔掉 U 盘
-  · 确认 D 盘盘符是 D:（不是就改回来）
-  · 双击 D:\Reinstall_Kit\开始.cmd -> 选 6（重建链接 + 装软件）
+  · 确认数据盘盘符与 kit.config.json 的 dataRoot 一致（不一致就去磁盘管理改回来）
+  · 双击 $($script:KitRoot)\开始.cmd -> 选 6（重建链接 + 装软件）
   · 完了再选 7（收尾）
 
 五、如果卡住

@@ -19,7 +19,7 @@
 [CmdletBinding()]
 param(
     [string]$OldRoot = "C:\Windows.old\Users\$env:USERNAME",
-    [string]$MigrationRoot = "D:\migration\C\Users\$env:USERNAME",
+    [string]$MigrationRoot = '',
     [switch]$Run,
     [switch]$SkipEdge
 )
@@ -29,6 +29,22 @@ $ErrorActionPreference = 'Continue'
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $KitDir = Split-Path -Parent $scriptDir
 if (-not (Test-Path -LiteralPath (Join-Path $KitDir 'links.csv'))) { $KitDir = 'D:\Reinstall_Kit' }
+
+# 迁移根：命令行参数优先，其次 kit.config.json；两处都没有就没法恢复
+if (-not $MigrationRoot) {
+    $kitCfgFile = Join-Path $KitDir 'kit.config.json'
+    if (Test-Path -LiteralPath $kitCfgFile) {
+        try {
+            $kitCfg = Get-Content -LiteralPath $kitCfgFile -Raw -Encoding UTF8 | ConvertFrom-Json
+            $MigrationRoot = [string]$kitCfg.migrationRoot
+        } catch { }
+    }
+}
+if (-not $MigrationRoot) {
+    Write-Host "  [错误] 没有配置迁移根目录：kit.config.json 的 migrationRoot 为空。" -ForegroundColor Red
+    Write-Host "         本脚本要把数据恢复到该目录，请先填好再跑。" -ForegroundColor Gray
+    exit 2
+}
 
 $LogDir = Join-Path $KitDir 'logs'
 New-Item -ItemType Directory -Path $LogDir -Force | Out-Null

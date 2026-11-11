@@ -25,11 +25,9 @@ $ErrorActionPreference = 'Stop'
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 
-# 迁移根目录：优先读本机私有配置，缺省按当前用户名推断
-$MigrationRoot = $null
-$configFile = Join-Path (Split-Path -Parent $scriptDir) 'local.config.ps1'
-if (Test-Path -LiteralPath $configFile) { . $configFile }
-if (-not $MigrationRoot) { $MigrationRoot = Join-Path 'D:\migration\C\Users' $env:USERNAME }
+# 迁移根目录来自 kit.config.json（local.config.ps1 已停用）
+. (Join-Path $PSScriptRoot '_common.ps1')
+if (-not (Assert-MigrationRoot)) { exit 2 }
 
 $csvCandidates = @(
     (Join-Path (Split-Path -Parent $scriptDir) 'links.csv'),

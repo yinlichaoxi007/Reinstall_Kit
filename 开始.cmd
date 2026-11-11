@@ -51,7 +51,7 @@ echo     8   校验链接与数据可达（装程序前先跑）
 echo     9   收尾检查（链接/激活/数据恢复）
 echo.
 echo   【危险操作 · 需要多重确认】
-echo    10  回收 Dell 恢复分区（把 18GB 还给 C 盘）
+echo    10  回收 Dell 恢复分区（空间还给系统盘）
 echo    11  从出厂镜像还原系统（回滚）
 echo.
 echo   【辅助脚本 · Win11 内存维护（非重装必需）】
@@ -215,7 +215,7 @@ echo.
 echo    这个操作会删除 NVMe 上的三个 Dell 恢复分区，把 18 GB 并回 C 盘。
 echo    删除后：
 echo      - F12 里的 Factory Image Restore 一键入口永久消失
-echo      - 只能靠 D:\Reinstall_Kit\DellFactoryImage 手工还原
+echo      - 只能靠工程包里的 DellFactoryImage 手工还原
 echo.
 echo    脚本自己会检查：系统是不是已重装、备份是不是完整、
 echo    分区是不是真的 Dell 那三个。任何一条不满足都会拒绝执行。

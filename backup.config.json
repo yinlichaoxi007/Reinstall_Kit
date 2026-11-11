@@ -1,6 +1,5 @@
 {
-  "_说明": "备份清单配置。增删备份项只改这里；本机如需不同清单，复制为 backup.local.json 后修改（已被 git 忽略，会整体覆盖本文件）。路径均相对当前用户目录，系统项除外。",
-  "destRoot": "D:\\Reinstall_Kit\\backup",
+  "_说明": "备份清单配置。增删备份项只改这里；本机如需不同清单，复制为 backup.local.json 后修改（已被 git 忽略，会整体覆盖本文件）。路径均相对当前用户目录，系统项除外。备份落点由 kit.config.json 的 backupRoot 决定。",
   "categories": [
     {
       "id": "ai-tools",

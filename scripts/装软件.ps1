@@ -15,7 +15,7 @@
 [CmdletBinding()]
 param(
     [string]$Manifest = 'packages-core.json',
-    [string]$InstallRoot = 'D:\Programs',
+    [string]$InstallRoot = '',
     [switch]$SkipHeavy,
     [switch]$Force,
     [switch]$DryRun
@@ -27,6 +27,18 @@ $ErrorActionPreference = 'Continue'
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $KitDir    = Split-Path -Parent $scriptDir
 if (-not (Test-Path (Join-Path $KitDir 'links.csv'))) { $KitDir = 'D:\Reinstall_Kit' }
+
+# 安装根与迁移根都来自 kit.config.json；没配时安装根退回「工程包所在盘\Programs」
+$kitCfg = $null
+$kitCfgFile = Join-Path $KitDir 'kit.config.json'
+if (Test-Path -LiteralPath $kitCfgFile) {
+    try { $kitCfg = Get-Content -LiteralPath $kitCfgFile -Raw -Encoding UTF8 | ConvertFrom-Json } catch { }
+}
+$MigrationRoot = if ($kitCfg) { [string]$kitCfg.migrationRoot } else { '' }
+if (-not $InstallRoot) {
+    if ($kitCfg -and $kitCfg.installRoot) { $InstallRoot = [string]$kitCfg.installRoot }
+    else { $InstallRoot = (Split-Path -Qualifier $KitDir) + '\Programs' }
+}
 
 $LogDir = Join-Path $KitDir 'logs'
 New-Item -ItemType Directory -Path $LogDir -Force | Out-Null
@@ -189,7 +201,7 @@ if ($DryRun) {
     Say ""
     Say "=== 演练模式：只列清单，不安装 ===" 'Cyan'
     Say ("系统级软件会尝试装到: {0}\<包ID>" -f $InstallRoot)
-    Say  "用户级软件走 junction，落在 D:\migration\...\Programs"
+    Say  "用户级软件走 junction，落在迁移根目录下（kit.config.json 的 migrationRoot）"
     Say ""
     $i = 0
     foreach ($id in $ids) {
@@ -220,9 +232,10 @@ Say ""
 Say "=== 安装位置策略 ===" 'Cyan'
 Say ("  系统级软件根目录: {0}" -f $InstallRoot)
 Say  "  用户级软件（VSCode / WorkBuddy / Qoder / Trae 等）：由 junction 指到"
-Say  "      D:\migration\C\Users\<用户>\AppData\Local\Programs"
+Say ("      {0}\AppData\Local\Programs（路径见 kit.config.json 的 migrationRoot）" -f `
+        $(if ($MigrationRoot) { $MigrationRoot } else { '<迁移根>' }))
 Say  "  少数安装器不认 --location（如 msix / 商店包），会自动回退默认位置，报告里标出来"
-Say  "  提示：D 盘是机械硬盘，IDE / 编译器这类天天用又吃 IO 的，留 C 盘更划算"
+Say  "  提示：机械硬盘上跑 IDE / 编译器这类天天用又吃 IO 的程序，留 C 盘更划算"
 Say ""
 
 if ($haveWinget) {

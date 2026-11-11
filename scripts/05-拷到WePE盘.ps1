@@ -19,7 +19,8 @@
 #>
 [CmdletBinding()]
 param(
-    [string]$Iso = 'D:\软件包\系统\Win10_IoT_Enterprise_LTSC_2021_64-Bit_2608.iso',
+    [Alias('IsoPath')]
+    [string]$Iso = '',
     [string]$AnswerFile = 'autounattend-保留恢复分区-社区重制版.xml',
     [string]$DriveLetter = '',
     [switch]$DryRun
@@ -33,8 +34,12 @@ Write-Head "把安装镜像放到 WePE 盘（不动分区）"
 if (-not (Assert-Admin)) { Stop-KitLog; exit 2 }
 
 # ================================================================= 0 前置
-if (-not (Test-Path -LiteralPath $Iso)) {
-    Write-Err ("找不到 ISO: " + $Iso)
+if (-not $Iso) { $Iso = $IsoPath }
+if (-not $Iso) { $Iso = Find-KitIso }
+
+if (-not $Iso -or -not (Test-Path -LiteralPath $Iso)) {
+    Write-Err ("找不到 ISO: " + $(if ($Iso) { $Iso } else { '(未配置，也没在工程包/数据盘里找到)' }))
+    Write-Info '把 ISO 放到工程包目录或数据盘下，或改 kit.config.json 的 isoPath'
     Stop-KitLog; exit 1
 }
 $isoItem = Get-Item -LiteralPath $Iso
@@ -67,6 +72,7 @@ foreach ($u in $usbList) {
 }
 
 $target = $null
+if (-not $DriveLetter -and $WepeDrive) { $DriveLetter = $WepeDrive }
 if ($DriveLetter) {
     $target = $usbList | Where-Object { $_.DriveLetter -eq $DriveLetter.TrimEnd(':').ToUpper() } | Select-Object -First 1
 } elseif ($usbList.Count -eq 1) {
@@ -228,20 +234,30 @@ if (-not $verified) {
     Write-Ok "SHA256 校验通过，镜像完整"
 }
 
-# 应答文件
-if ((Test-Path -LiteralPath $ansDest)) {
-    $h1 = (Get-FileHash -LiteralPath $ansDest -Algorithm SHA256).Hash
-    $h2 = (Get-FileHash -LiteralPath $ansPath -Algorithm SHA256).Hash
-    if ($h1 -eq $h2) {
-        Write-Ok "autounattend.xml 已是最新，跳过"
-    } else {
-        Copy-Item -LiteralPath $ansDest -Destination ($ansDest + '.bak') -Force
-        Copy-Item -LiteralPath $ansPath -Destination $ansDest -Force
-        Write-Ok "autounattend.xml 已更新（旧的存为 .bak）"
-    }
+# 应答文件：先按本机配置渲染占位符，再和 U 盘上的比内容
+$kitName = Split-Path -Leaf $script:KitRoot
+$rawAns = Get-Content -LiteralPath $ansPath -Raw -Encoding UTF8
+$ansText = $rawAns.Replace('__USER__', $LocalUserName).Replace('__COMPUTERNAME__', $LocalComputerName).Replace('__KITNAME__', $kitName)
+$generatedPath = Join-Path $script:KitRoot 'autounattend.generated.xml'
+
+if ($DryRun) {
+    Write-Info ("[演练] 会按本机配置渲染 {0} -> {1}" -f $ansPath, $ansDest)
 } else {
-    Copy-Item -LiteralPath $ansPath -Destination $ansDest -Force
-    Write-Ok "autounattend.xml 已放到 U 盘根目录"
+    [IO.File]::WriteAllText($generatedPath, $ansText, (New-Object Text.UTF8Encoding($true)))
+    Write-Info ("渲染结果已留存: " + $generatedPath)
+    if (Test-Path -LiteralPath $ansDest) {
+        $oldText = Get-Content -LiteralPath $ansDest -Raw -Encoding UTF8
+        if ($oldText -eq $ansText) {
+            Write-Ok "autounattend.xml 已是最新，跳过"
+        } else {
+            Copy-Item -LiteralPath $ansDest -Destination ($ansDest + '.bak') -Force
+            [IO.File]::WriteAllText($ansDest, $ansText, (New-Object Text.UTF8Encoding($true)))
+            Write-Ok "autounattend.xml 已更新（旧的存为 .bak）"
+        }
+    } else {
+        [IO.File]::WriteAllText($ansDest, $ansText, (New-Object Text.UTF8Encoding($true)))
+        Write-Ok "autounattend.xml 已放到 U 盘根目录"
+    }
 }
 
 # ================================================================= 5 指引
@@ -263,9 +279,9 @@ Write-Host "    说明应答文件没被自动读取。此时按 Shift+F10 开�
 Write-Host "      <挂载盘符>:\setup.exe /unattend:$($target.DriveLetter):\autounattend.xml" -ForegroundColor White
 Write-Host ""
 Write-Host "  本次应答文件做什么：" -ForegroundColor Gray
-Write-Host "    · 只格式化 3 号分区（C:），ESP / MSR / 三个 Dell 恢复分区一律不碰" -ForegroundColor Gray
+Write-Host "    · 只格式化应答文件里指定的系统分区，ESP / MSR / 厂商恢复分区一律不碰" -ForegroundColor Gray
 Write-Host "    · 跳过 OOBE 的联网、账号、隐私页" -ForegroundColor Gray
-Write-Host "    · 首次登录自动找 D:\Reinstall_Kit\bootstrap.cmd 并执行" -ForegroundColor Gray
+Write-Host "    · 首次登录自动在 D~H 盘里找工程包目录并执行 bootstrap.cmd" -ForegroundColor Gray
 Write-Host ""
 
 Stop-KitLog

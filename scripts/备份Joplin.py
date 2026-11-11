@@ -20,7 +20,8 @@ Joplin 笔记库备份（一致快照）
   · 同步账号的 token —— 同上
   这些重装后要自己重新输入。
 
-输出：D:\\Reinstall_Kit\\backup\\joplin-<时间戳>\\
+输出：<backupRoot>\\joplin-<时间戳>\\
+      backupRoot 由工程包根目录的 kit.config.json 决定，留空时用 <工程包>\\backup
 """
 import argparse
 import datetime
@@ -33,9 +34,28 @@ import sys
 import time
 import threading
 
-KIT_ROOT = r"D:\Reinstall_Kit"
-DEFAULT_OUT = os.path.join(KIT_ROOT, "backup")
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+KIT_ROOT = os.path.dirname(SCRIPT_DIR)
+KIT_CONFIG_FILE = os.path.join(KIT_ROOT, "kit.config.json")
 HOME = os.path.expanduser("~")
+
+
+def load_backup_root():
+    """读取 kit.config.json 的 backupRoot
+
+    返回值: 备份根目录；文件缺失或字段留空时返回 <工程包>\\backup
+    备注: 只有独立运行本脚本时才用到，被 02-备份.py 调用时由它传 --out
+    """
+    try:
+        with open(KIT_CONFIG_FILE, encoding="utf-8-sig") as fh:
+            cfg = json.load(fh) or {}
+        root = (cfg.get("backupRoot") or "").strip()
+    except (OSError, ValueError):
+        root = ""
+    return root or os.path.join(KIT_ROOT, "backup")
+
+
+DEFAULT_OUT = load_backup_root()
 
 
 def progress_line(text):

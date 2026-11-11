@@ -203,11 +203,11 @@
       </AutoLogon>
 
       <FirstLogonCommands>
-        <!-- 在 D/E/F/G/H 里找 Reinstall_Kit，找到就跑 bootstrap.cmd；不写死盘符 -->
+        <!-- 在 D/E/F/G/H 里找工程包目录，找到就跑 bootstrap.cmd；不写死盘符 -->
         <SynchronousCommand wcm:action="add">
           <Order>1</Order>
           <Description>Reinstall Kit Bootstrap</Description>
-          <CommandLine>cmd.exe /c for %d in (D E F G H) do @if exist "%d:\Reinstall_Kit\bootstrap.cmd" (call "%d:\Reinstall_Kit\bootstrap.cmd" &amp; exit /b 0)</CommandLine>
+          <CommandLine>cmd.exe /c for %d in (D E F G H) do @if exist "%d:\__KITNAME__\bootstrap.cmd" (call "%d:\__KITNAME__\bootstrap.cmd" &amp; exit /b 0)</CommandLine>
           <RequiresUserInput>false</RequiresUserInput>
         </SynchronousCommand>
       </FirstLogonCommands>

@@ -151,13 +151,19 @@ if (Test-Path -LiteralPath $csv) {
 # ================================================================= 5 依赖
 Write-Step "5. 依赖文件"
 
+$iso = $IsoPath
+if (-not $iso -or -not (Test-Path -LiteralPath $iso)) { $iso = Find-KitIso }
+
+$factory = Join-Path $script:KitRoot 'DellFactoryImage'
 $need = @(
-    @{ P = 'D:\Reinstall_Kit\DellFactoryImage\MANIFEST.json'; N = '出厂镜像清单' },
-    @{ P = 'D:\Reinstall_Kit\DellFactoryImage\P5_Image\Image\install.swm'; N = '出厂镜像 install.swm' },
-    @{ P = 'D:\软件包\系统\Win10_IoT_Enterprise_LTSC_2021_64-Bit_2608.iso'; N = '安装 ISO' }
+    @{ P = (Join-Path $factory 'MANIFEST.json'); N = '出厂镜像清单'; Optional = $true },
+    @{ P = (Join-Path $factory 'P5_Image\Image\install.swm'); N = '出厂镜像 install.swm'; Optional = $true },
+    @{ P = $iso; N = '安装 ISO'; Optional = $false }
 )
 foreach ($n in $need) {
-    if (Test-Path -LiteralPath $n.P) { Add-Result 'PASS' $n.N '在' }
+    if ($n.P -and (Test-Path -LiteralPath $n.P)) { Add-Result 'PASS' $n.N '在' }
+    elseif ($n.Optional) { Add-Result 'INFO' $n.N '缺失（可选，只有跑 11 才需要）' }
+    elseif (-not $n.P) { Add-Result 'FAIL' $n.N '没配置也没在工程包/数据盘里找到' }
     else { Add-Result 'FAIL' $n.N '缺失' }
 }
 

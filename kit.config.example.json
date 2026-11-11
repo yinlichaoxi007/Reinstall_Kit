@@ -1,0 +1,11 @@
+{
+  "_说明": "本机配置模板。复制为 kit.config.json 后填写；kit.config.json 已被 git 忽略，每台机器一份，不随工程包分发。字段留空表示按环境自动推断，路径用绝对路径（反斜杠写成双反斜杠）。",
+  "userName": "",
+  "computerName": "",
+  "dataRoot": "",
+  "migrationRoot": "",
+  "backupRoot": "",
+  "installRoot": "",
+  "isoPath": "",
+  "wepeDrive": ""
+}

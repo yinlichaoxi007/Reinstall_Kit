@@ -4,7 +4,7 @@
     ============================================================
     跑完 bootstrap（重建链接 + 装软件）之后用这个脚本核对一遍：
         · links.csv 里的链接是不是都真的接上了
-        · C 盘空间、D 盘盘符对不对
+        · C 盘空间、数据盘盘符对不对
         · 激活状态
         · 备份数据要不要拷回来（默认只看不拷）
         · Dell 驱动 / 内存瘦身 还差哪一步
@@ -42,17 +42,22 @@ if ($c) {
     if ($c.SizeRemaining -lt 20GB) { Write-Warn "C 盘可用不足 20GB"; $null = $issues.Add('C 盘空间偏小') }
 }
 
-$d = Get-Volume -DriveLetter D -ErrorAction SilentlyContinue
+$dataRoot = $DataRoot
+if (-not $dataRoot) { $dataRoot = 'D:\' }
+$dataLetter = $dataRoot.TrimEnd('\').TrimEnd(':')
+$d = Get-Volume -DriveLetter $dataLetter -ErrorAction SilentlyContinue
 if (-not $d) {
-    Write-Err "D 盘不存在。检查 SATA 线是否插回、盘符是否被改成别的字母。"
-    $null = $issues.Add('D 盘缺失')
+    Write-Err ("{0} 不存在。检查数据盘是否接回、盘符是否被改成别的字母。" -f $dataRoot)
+    $null = $issues.Add('数据盘缺失')
 } else {
-    Write-Info ("D: 卷标 {0}  可用 {1}" -f $d.FileSystemLabel, (Format-Human $d.SizeRemaining))
-    if ($d.FileSystemLabel -ne 'DATA') { Write-Warn "卷标不是 DATA（bootstrap 靠卷标找盘，之后要改回来）" }
-    if (-not (Test-Path -LiteralPath 'D:\migration')) {
-        Write-Warn "D:\migration 不在 —— 链接的目标都没了"
-        $null = $issues.Add('D:\migration 缺失')
-    } else { Write-Ok "D:\migration 在" }
+    Write-Info ("{0}: 可用 {1}" -f $dataLetter, (Format-Human $d.SizeRemaining))
+    if (-not $MigrationRoot) {
+        Write-Warn "迁移根未配置（kit.config.json 的 migrationRoot 为空）"
+        $null = $issues.Add('迁移根未配置')
+    } elseif (-not (Test-Path -LiteralPath $MigrationRoot)) {
+        Write-Warn ("迁移根不在: " + $MigrationRoot)
+        $null = $issues.Add('迁移根缺失')
+    } else { Write-Ok ("迁移根在: " + $MigrationRoot) }
 }
 
 # ================================================================= 2 链接
@@ -119,7 +124,7 @@ if ($resultLogs.Count -gt 0) {
 # ================================================================= 5 数据恢复
 Write-Step "5. 备份数据恢复"
 
-$backupRoot = Join-Path $script:KitRoot 'backup'
+$backupRoot = $BackupRoot
 if (-not $BackupDir) {
     $latest = Get-ChildItem -LiteralPath $backupRoot -Directory -ErrorAction SilentlyContinue |
               Sort-Object Name -Descending | Select-Object -First 1
